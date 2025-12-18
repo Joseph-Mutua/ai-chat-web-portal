@@ -1,0 +1,36 @@
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1" viewBox="0 0 500 500">
+    <defs>
+        <style>
+            .st0 {
+            fill: url(#linear-gradient);
+            }
+
+            .st0, .st1 {
+            stroke: #2F2F4B;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 30px;
+            }
+
+            .st1 {
+            fill: url(#linear-gradient);
+            }
+        </style>
+        <linearGradient id="linear-gradient" x1="3.3" y1="493.2" x2="11.4" y2="485.9"
+            gradientTransform="translate(-92.6 17977.2) scale(47.1 -36.2)"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#531cb3" stop-opacity=".5" />
+            <stop offset="1" stop-color="#006c67" stop-opacity=".5" />
+        </linearGradient>
+        <linearGradient id="linear-gradient1" x1="5.6" y1="488" x2="13.8" y2="480.5"
+            gradientTransform="translate(-79.9 9055.5) scale(38.6 -18.4)"
+            xlink:href="#linear-gradient" />
+    </defs>
+    <g id="mail-outline">
+        <rect id="Rectangle_379" class="st1" x="19.8" y="66.1" width="460.3" height="354.1"
+            rx="50.3" ry="50.3" />
+        <path id="Path_150" class="st0"
+            d="M43.8,81.5l173.3,151.3c18.8,16.4,46.9,16.4,65.7,0l173.3-151.3" />
+    </g>
+</svg>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    version="1.1" viewBox="0 0 200 200">
+    <defs>
+        <style>
+            .st0 {
+            fill: url(#linear-gradient);
+            }
+
+            .st1 {
+            fill: none;
+            stroke: #fff;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 8px;
+            }
+        </style>
+        <linearGradient id="linear-gradient" x1="13.3" y1="49.8" x2="185.8" y2="149.4"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#006c67" />
+            <stop offset="1" stop-color="#531cb3" />
+        </linearGradient>
+    </defs>
+    <circle class="st0" cx="99.6" cy="99.6" r="99.6" />
+    <rect class="st1" x="47" y="56.9" width="105.1" height="80.8" rx="11.2" ry="11.2" />
+    <path class="st1" d="M63.2,73l36.4,28.3,36.4-28.3" />
+</svg>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 500 500">
+  <!-- Generator: Adobe Illustrator 29.4.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 152)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #531cb3;
+        stroke: #006c67;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 20px;
+      }
+    </style>
+  </defs>
+  <path id="pencil-outline" class="st0" d="M338.6,105L48.4,395.8c-4.8,4.8-8.5,10.5-11.1,16.7l-21,52.2c-.3.8-.6,1.6-.7,2.4-.8,6,3.7,11.4,9.6,12,1.2.1,2.4,0,3.6-.4l52.7-15.3c8.1-2.4,15.5-6.7,21.5-12.8L393.6,158.4c4.2-4.3,4.2-11.2-.2-15.3l-39.8-38.2c-4.2-4.1-10.9-4-15.1.2ZM416.2,21.2l-16.9,16.9c-4.3,4.3-4.2,11.5.4,15.6l47.1,42.4c4.2,3.8,10.8,3.7,14.8-.4l9.7-9.7,7.5-7.5c.3-.3.5-.6.8-.9,11.4-14.2-.6-33.7-7.4-40.9s-.5-.5-.8-.7l-16.9-14.3c-6.8-6.9-31.5-7.4-38.3-.6Z"/>
+</svg>

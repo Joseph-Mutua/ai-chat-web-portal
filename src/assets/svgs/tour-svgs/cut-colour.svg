@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 512 512">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#linear-gradient2);
+      }
+
+      .st0, .st1, .st2 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 10px;
+      }
+
+      .st1 {
+        fill: url(#linear-gradient1);
+      }
+
+      .st2 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="120.3" y1="77" x2="120.3" y2="222.2" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#531cb3"/>
+      <stop offset="1" stop-color="#006c67"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient1" x1="256" y1="138" x2="256" y2="431.7" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient2" x1="373" y1="262.9" x2="373" y2="362.3" xlink:href="#linear-gradient"/>
+  </defs>
+  <path class="st2" d="M100.5,221c16.3,0,32.1-5.5,44.8-15.7l41.5,16.9,6.8-12.6c1.2-2.3,2.7-4.4,4.3-6.4l14.2-14.4-41.2-24.9c8.2-38.9-16.7-77.1-55.6-85.3-38.9-8.2-77.1,16.7-85.3,55.6s16.7,77.1,55.6,85.3c4.9,1,9.9,1.6,14.9,1.6ZM100.5,109c22.1,0,40,17.9,40,40s-17.9,40-40,40-40-17.9-40-40,17.9-40,40-40Z"/>
+  <path class="st1" d="M480,169l-5.5-12.6c-4.5-10.4-14.7-16-32.8-17.9-10.1-1-27-1.2-49.7,3.8-20,4.4-122.1,28.2-164.9,58.6-20.2,14.4-24.1,33.7-27.1,49.2-2.8,14.1-5,25.3-18,35-15,11.1-27.3,16.4-33.6,18.6-31-24.6-76.2-19.5-100.8,11.6-24.6,31-19.5,76.2,11.6,100.8s76.2,19.5,100.8-11.6c14-17.7,18.9-40.9,13.2-62.8l306.8-172.8ZM255.5,256c-8.8,0-16-7.2-16-16s7.2-16,16-16,16,7.2,16,16h0c0,8.8-7.2,16-16,16h0ZM103.5,400c-22.1,0-40-17.9-40-40s17.9-40,40-40,40,17.9,40,40-17.9,40-40,40Z"/>
+  <path class="st0" d="M346.8,262.9l-83.7,48.2,27.6,13.1,3.6,1.7c18.7,9.1,68.4,33.1,119.2,36.1,3.9.2,7.5.3,10.8.3,20.7,0,31.7-5.3,38.4-9.3l20.2-14-136.2-76.1Z"/>
+</svg>

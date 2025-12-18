@@ -1,0 +1,49 @@
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1" viewBox="0 0 500 500">
+    <defs>
+        <style>
+            .st0 {
+            fill: url(#linear-gradient);
+            }
+
+            .st0, .st1, .st2 {
+            stroke: #2F2F4B;
+            stroke-linejoin: round;
+            stroke-width: 30px;
+            }
+
+            .st1, .st2 {
+            fill: none;
+            }
+
+            .st3 {
+            fill: #fff;
+            }
+
+            .st2 {
+            stroke-linecap: round;
+            }
+        </style>
+        <linearGradient id="linear-gradient" x1="7.3" y1="499.1" x2="7.9" y2="483.8"
+            gradientTransform="translate(-89.6 20224.6) scale(44.1 -40.7)"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#531cb3" />
+            <stop offset="1" stop-color="#006c67" />
+        </linearGradient>
+    </defs>
+    <g id="calendar">
+        <rect id="Rectangle_562" class="st0" x="17.4" y="56" width="463.5" height="427.8" rx="90"
+            ry="90" />
+        <circle id="Ellipse_255" class="st3" cx="293.7" cy="225.4" r="26.7" />
+        <circle id="Ellipse_256" class="st3" cx="382.8" cy="225.4" r="26.7" />
+        <circle id="Ellipse_257" class="st3" cx="293.7" cy="314.5" r="26.7" />
+        <circle id="Ellipse_258" class="st3" cx="382.8" cy="314.5" r="26.7" />
+        <circle id="Ellipse_259" class="st3" cx="115.4" cy="314.5" r="26.7" />
+        <circle id="Ellipse_260" class="st3" cx="204.6" cy="314.5" r="26.7" />
+        <circle id="Ellipse_261" class="st3" cx="115.4" cy="403.7" r="26.7" />
+        <circle id="Ellipse_262" class="st3" cx="204.6" cy="403.7" r="26.7" />
+        <circle id="Ellipse_263" class="st3" cx="293.7" cy="403.7" r="26.7" />
+        <path id="Path_233" class="st2" d="M106.9,20.4v35.8M393.5,20.4v35.8" />
+        <path id="Path_234" class="st1" d="M483.1,145.8H17.4" />
+    </g>
+</svg>
