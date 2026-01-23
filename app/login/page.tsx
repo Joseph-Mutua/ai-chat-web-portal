@@ -6,6 +6,8 @@ import { useSession } from '@/hooks/use-session'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { LoadingContainer } from '@/components/ui/loading'
+import Image from 'next/image'
+import logoImage from '@/assets/images/logo.png'
 
 export default function LoginPage() {
   const { isAuthenticated, isLoading } = useSession()
@@ -26,16 +28,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col xl:flex-row bg-[#1E1E1E] xl:bg-white xl:relative xl:overflow-hidden">
-      {/* Mobile/Tablet Header - shows below xl (1280px) */}
-      <div className="xl:hidden bg-[#1E1E1E] px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white lg:relative lg:overflow-hidden">
+      {/* Mobile/Tablet Header - shows below lg (1024px) */}
+      <div className="lg:hidden bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#006C67] via-[#531CB3] to-[#2F2F4B] rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-bold">ws</span>
-          </div>
-          <span className="text-white font-semibold">warpSpeed</span>
+          <Image
+            src={logoImage}
+            alt="warpSpeed"
+            width={28}
+            height={28}
+            className="w-7 h-7 object-contain"
+          />
+          <span className="text-[#1E1E1E] font-semibold text-base">warpSpeed</span>
         </div>
-        <button className="p-2 text-white">
+        <button className="p-2 text-[#1E1E1E]">
           <svg
             className="w-6 h-6"
             fill="none"
@@ -52,8 +58,8 @@ export default function LoginPage() {
         </button>
       </div>
 
-      {/* Desktop Layout - Only shows at xl (1280px) and above */}
-      <div className="hidden xl:block xl:relative xl:w-full xl:min-h-screen xl:bg-white">
+      {/* Desktop Layout - Only shows at lg (1024px) and above */}
+      <div className="hidden lg:block lg:relative lg:w-full lg:min-h-screen lg:bg-white">
         {/* Left Panel - AI Chat Preview */}
         <LoginPreviewPanel />
 
@@ -63,8 +69,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Mobile/Tablet Layout - shows below xl (1280px) */}
-      <div className="xl:hidden w-full bg-white">
+      {/* Mobile/Tablet Layout - shows below lg (1024px) */}
+      <div className="lg:hidden flex-1 w-full bg-white">
         <LoginFormNew />
       </div>
     </div>

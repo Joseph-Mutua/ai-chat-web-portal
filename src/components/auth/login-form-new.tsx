@@ -6,8 +6,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLogin } from '@/hooks/api/use-auth'
 import { getErrorMessage } from '@/lib/utils/errors'
+import logoImage from '@/assets/images/logo.png'
 
-export function LoginFormNew() {
+interface LoginFormNewProps {
+  isMobile?: boolean
+}
+
+export function LoginFormNew({ isMobile = false }: LoginFormNewProps) {
   const router = useRouter()
   const login = useLogin()
   const [email, setEmail] = useState('')
@@ -32,51 +37,31 @@ export function LoginFormNew() {
   }
 
   return (
-    <div className="w-full flex items-center justify-center p-6 xl:p-12 bg-white min-h-screen">
-      <div className="w-full max-w-sm space-y-6">
-        {/* Logo - Spiral/Swirl icon */}
-        <div className="flex justify-center mb-8">
-          <div className="relative">
-            {/* Spiral logo SVG */}
-            <svg 
-              className="w-14 h-14" 
-              viewBox="0 0 56 56" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                d="M28 4C14.745 4 4 14.745 4 28s10.745 24 24 24 24-10.745 24-24S41.255 4 28 4z" 
-                fill="none"
-              />
-              <path 
-                d="M28 8c11.046 0 20 8.954 20 20s-8.954 20-20 20S8 39.046 8 28 16.954 8 28 8z" 
-                stroke="#1A7A7A" 
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <path 
-                d="M28 14c7.732 0 14 6.268 14 14s-6.268 14-14 14-14-6.268-14-14 6.268-14 14-14z" 
-                stroke="#4D3D99" 
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <path 
-                d="M28 20c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z" 
-                stroke="#1A7A7A" 
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <circle cx="28" cy="28" r="3" fill="#4D3D99" />
-            </svg>
-          </div>
+    <div className="w-full flex items-center justify-center px-6 py-8 lg:p-12 bg-white min-h-[calc(100vh-56px)] lg:min-h-screen">
+      <div className="w-full max-w-sm space-y-5">
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <Image
+            src={logoImage}
+            alt="warpSpeed Logo"
+            width={56}
+            height={56}
+            className="w-14 h-14 object-contain"
+            priority
+          />
         </div>
 
-        {/* Heading */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-[#1E1E1E] mb-2">
+        {/* Heading - Different for mobile vs desktop */}
+        <div className="text-center mb-6">
+          {/* Mobile heading */}
+          <h1 className="lg:hidden text-2xl font-normal text-[#1E1E1E]">
+            Sign in to access your AI partner
+          </h1>
+          {/* Desktop heading */}
+          <h1 className="hidden lg:block text-2xl font-bold text-[#1E1E1E] mb-2">
             Let&apos;s get you started
           </h1>
-          <p className="text-sm text-[#827F85]">
+          <p className="hidden lg:block text-sm text-[#827F85]">
             Sign up to experience AI that actually understands
             <br />
             your workflow
@@ -84,9 +69,9 @@ export function LoginFormNew() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-[#1E1E1E]">
               Email
             </label>
@@ -97,12 +82,12 @@ export function LoginFormNew() {
               placeholder="Enter Email ID"
               required
               autoComplete="email"
-              className="w-full px-4 py-3.5 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#827F85] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
+              className="w-full px-4 py-3.5 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#A0A0A0] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
             />
           </div>
 
           {/* Password Input */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-[#1E1E1E]">
               Password
             </label>
@@ -114,12 +99,12 @@ export function LoginFormNew() {
                 placeholder="Enter Password"
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-3.5 pr-12 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#827F85] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
+                className="w-full px-4 py-3.5 pr-12 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#A0A0A0] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A0A0A0] hover:text-[#1E1E1E] transition-colors"
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +131,7 @@ export function LoginFormNew() {
           <button
             type="submit"
             disabled={login.isPending}
-            className="w-full py-4 bg-[#1A7A7A] hover:bg-[#156666] text-white text-base font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-4 mt-2 bg-[#1A7A7A] hover:bg-[#156666] text-white text-base font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {login.isPending ? (
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -160,12 +145,12 @@ export function LoginFormNew() {
         </form>
 
         {/* Divider */}
-        <div className="relative my-6">
+        <div className="relative py-4">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-[#EBEBEB]" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-[#827F85]">Or</span>
+            <span className="px-4 bg-white text-[#A0A0A0]">Or</span>
           </div>
         </div>
 
@@ -199,15 +184,26 @@ export function LoginFormNew() {
           </button>
         </div>
 
-        {/* Privacy Text */}
-        <p className="text-xs text-center text-[#827F85] mt-6">
+        {/* Desktop Privacy Text - only shows on desktop */}
+        <p className="hidden lg:block text-xs text-center text-[#827F85] mt-6">
           We respect your privacy. You can unlink your account anytime.
         </p>
 
-        {/* Footer Link */}
-        <p className="text-sm text-center text-[#827F85]">
+        {/* Footer Link - Different for mobile vs desktop */}
+        {/* Mobile footer */}
+        <p className="lg:hidden text-sm text-center text-[#827F85] mt-6">
           Don&apos;t have an account?{' '}
           <Link href="#" className="text-[#1A7A7A] hover:underline font-medium">
+            Download our app
+          </Link>
+          <br />
+          <span className="text-xs">to create an account and join the productivity revolution.</span>
+        </p>
+        
+        {/* Desktop footer */}
+        <p className="hidden lg:block text-sm text-center text-[#827F85] mt-6">
+          Don&apos;t have an account?{' '}
+          <Link href="#" className="text-[#531CB3] underline font-medium">
             Find out more
           </Link>
         </p>
