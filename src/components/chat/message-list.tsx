@@ -97,13 +97,13 @@ export function MessageList({ messages }: MessageListProps) {
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-y-auto p-6"
+      className="h-full overflow-y-auto px-4 lg:px-6 py-4 lg:py-6"
       onScroll={handleScroll}
       style={{ height: '100%' }}
     >
-      <div className="max-w-4xl mx-auto space-y-4">
+      <div className="w-full space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-text-secondary py-12">
+          <div className="text-center text-[#827F85] py-12">
             No messages yet. Start the conversation!
           </div>
         ) : (

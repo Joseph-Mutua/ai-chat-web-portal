@@ -2,17 +2,22 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import Image from 'next/image'
 import { useChatConversations } from '@/hooks/api/use-chat'
 import { Loading } from '@/components/ui/loading'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
+import logoImage from '@/assets/images/logo.png'
 import type { IChatSession } from '@/types'
 
-export function ConversationSidebar() {
+interface ConversationSidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export function ConversationSidebar({ isOpen = true, onClose }: ConversationSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const [search, setSearch] = useState('')
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
 
   const {
     data,
@@ -23,152 +28,192 @@ export function ConversationSidebar() {
   } = useChatConversations({
     page: 1,
     limit: 20,
-    search: search || undefined,
   })
 
-  const conversations =
-    data?.pages.flatMap((page) => page.data) || []
-
+  const conversations = data?.pages.flatMap((page) => page.data) || []
   const groupedConversations = groupConversationsByDate(conversations)
 
   const handleConversationClick = (id: string) => {
     router.push(`/chat/${id}`)
+    onClose?.()
   }
 
   const handleNewChat = () => {
     router.push('/chat')
+    onClose?.()
+  }
+
+  const handleChatHistory = () => {
+    setShowHistory(!showHistory)
   }
 
   return (
-    <div className="w-80 border-r border-border-light bg-white flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-border-light">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-text">Conversations</h2>
-          <button
-            onClick={handleNewChat}
-            className="p-2 rounded-lg hover:bg-background transition-colors"
-            title="New chat"
-          >
-            <svg
-              className="w-5 h-5 text-text"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
+    <>
+      {/* Mobile overlay - only show on mobile when sidebar is open */}
+      {isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={onClose}
+        />
+      )}
+      
+      <aside
+        className={cn(
+          'w-[280px] bg-white flex flex-col h-full transition-transform duration-300',
+          // Mobile: fixed, slides in/out
+          'fixed inset-y-0 left-0 z-50 lg:z-auto',
+          // Desktop: static, always visible
+          'lg:static lg:translate-x-0',
+          // Mobile: toggle visibility
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        {/* Logo */}
+        <div className="p-5 flex items-center gap-3">
+          <Image
+            src={logoImage}
+            alt="warpSpeed"
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+          />
+          <span className="text-[#1E1E1E] font-semibold text-lg">warpSpeed</span>
         </div>
 
-        {/* Search */}
-        {isSearchOpen ? (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  setIsSearchOpen(false)
-                  setSearch('')
-                }}
-                className="p-1 hover:bg-background rounded"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search conversations..."
-                autoFocus
-                className="flex-1"
-              />
-            </div>
-          </div>
-        ) : (
+        {/* Navigation */}
+        <nav className="px-4 flex-1">
+          {/* New Chat */}
           <button
-            onClick={() => setIsSearchOpen(true)}
-            className="w-full px-4 py-2 text-left text-sm text-text-secondary bg-background rounded-lg border border-border-light hover:bg-grey-light transition-colors"
+            onClick={handleNewChat}
+            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
           >
-            Search conversations...
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="font-medium">New Chat</span>
           </button>
-        )}
-      </div>
 
-      {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto">
-        {isLoading ? (
-          <div className="flex justify-center p-8">
-            <Loading />
-          </div>
-        ) : conversations.length === 0 ? (
-          <div className="p-8 text-center text-text-secondary">
-            <p>No conversations yet</p>
-            <p className="text-sm mt-2">Start a new chat to get started</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-border-light">
-            {Object.entries(groupedConversations).map(([date, convos]) => (
-              <div key={date}>
-                <div className="px-4 py-2 text-xs font-medium text-text-secondary uppercase bg-background">
-                  {date}
-                </div>
-                {convos.map((conversation) => {
-                  const isActive = pathname === `/chat/${conversation.id}`
-                  return (
-                    <button
-                      key={conversation.id}
-                      onClick={() => handleConversationClick(conversation.id)}
-                      className={cn(
-                        'w-full px-4 py-3 text-left hover:bg-background transition-colors',
-                        isActive && 'bg-primary-light border-l-4 border-primary'
-                      )}
-                    >
-                      <div className="font-medium text-text truncate">
-                        {conversation.title || 'New Conversation'}
-                      </div>
-                      {conversation.lastMessage && (
-                        <div className="text-sm text-text-secondary truncate mt-1">
-                          {conversation.lastMessage}
-                        </div>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Load More */}
-        {hasNextPage && (
-          <div className="p-4">
-            <button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-              className="w-full px-4 py-2 text-sm text-primary hover:bg-background rounded-lg border border-border-light disabled:opacity-50"
+          {/* Chat History */}
+          <button
+            onClick={handleChatHistory}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors",
+              showHistory && "bg-[#F4F5FA]"
+            )}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span className="font-medium">Chat History</span>
+            <svg 
+              className={cn("w-4 h-4 ml-auto transition-transform", showHistory && "rotate-180")} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
             >
-              {isFetchingNextPage ? 'Loading...' : 'Load more'}
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {/* Chat History List - Collapsible */}
+          {showHistory && (
+            <div className="ml-4 mt-2 max-h-[300px] overflow-y-auto">
+              {isLoading ? (
+                <div className="flex justify-center p-4">
+                  <Loading />
+                </div>
+              ) : conversations.length === 0 ? (
+                <p className="text-sm text-[#827F85] px-4 py-2">No conversations yet</p>
+              ) : (
+                <div className="space-y-1">
+                  {Object.entries(groupedConversations).map(([date, convos]) => (
+                    <div key={date}>
+                      <p className="text-xs text-[#827F85] px-4 py-1 uppercase">{date}</p>
+                      {convos.map((conversation) => {
+                        const isActive = pathname === `/chat/${conversation.id}`
+                        return (
+                          <button
+                            key={conversation.id}
+                            onClick={() => handleConversationClick(conversation.id)}
+                            className={cn(
+                              'w-full px-4 py-2 text-left text-sm hover:bg-[#F4F5FA] rounded-lg transition-colors truncate',
+                              isActive && 'bg-[#E8F5F5] text-[#1A7A7A]'
+                            )}
+                          >
+                            {conversation.title || 'New Conversation'}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  ))}
+                  {hasNextPage && (
+                    <button
+                      onClick={() => fetchNextPage()}
+                      disabled={isFetchingNextPage}
+                      className="w-full px-4 py-2 text-xs text-[#1A7A7A] hover:bg-[#F4F5FA] rounded-lg"
+                    >
+                      {isFetchingNextPage ? 'Loading...' : 'Load more'}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Settings */}
+          <button
+            onClick={() => {/* TODO: Navigate to settings */}}
+            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="font-medium">Settings</span>
+          </button>
+
+          {/* Help */}
+          <button
+            onClick={() => {/* TODO: Navigate to help */}}
+            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <circle cx="12" cy="12" r="10" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+              <circle cx="12" cy="17" r="0.5" fill="currentColor" />
+            </svg>
+            <span className="font-medium">Help</span>
+          </button>
+        </nav>
+
+        {/* Upgrade Card */}
+        <div className="p-4 mt-auto">
+          <div className="bg-[#FFF8E1] rounded-2xl p-5">
+            {/* Crown Icon in Inverted Pentagon Gem Shape */}
+            <div className="flex justify-center mb-3">
+              <div 
+                className="w-12 h-12 bg-[#FFD54F] flex items-center justify-center"
+                style={{ clipPath: 'polygon(18% 0%, 82% 0%, 100% 62%, 50% 100%, 0% 62%)' }}
+              >
+                <svg className="w-5 h-5 text-[#FF8F00]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-center font-semibold text-[#1E1E1E] mb-1">
+              Upgrade Your Plan
+            </h3>
+            <p className="text-center text-xs text-[#827F85] mb-4">
+              Enjoy more credits and use even more AI in your day!
+            </p>
+            <button className="w-full py-2.5 bg-white border border-[#EBEBEB] rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors">
+              Learn More
             </button>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </aside>
+    </>
   )
 }
 

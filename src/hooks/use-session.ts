@@ -27,15 +27,6 @@ export function useSession() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
-  const logoutMutation = useMutation({
-    mutationFn: logoutApi,
-    onSuccess: () => {
-      clearToken()
-      queryClient.clear()
-      router.push('/login')
-    },
-  })
-
   useEffect(() => {
     setIsLoading(userLoading)
   }, [userLoading])
@@ -47,10 +38,29 @@ export function useSession() {
     }
   }, [user])
 
+  const handleLogout = () => {
+    queryClient.removeQueries()
+    queryClient.clear()
+    clearToken()
+    setHasToken(false)
+    queryClient.invalidateQueries({ queryKey: ['user'] })
+    queryClient.cancelQueries({ queryKey: ['user'] })
+    
+    logoutApi().catch(() => {
+      // Ignore API errors - we're logging out locally anyway
+    })
+    
+    if (typeof window !== 'undefined') {
+      window.location.replace('/login')
+    } else {
+      router.replace('/login')
+    }
+  }
+
   return {
     user: user as User | undefined,
     isLoading,
     isAuthenticated: !!user && hasToken,
-    logout: () => logoutMutation.mutate(),
+    logout: handleLogout,
   }
 }

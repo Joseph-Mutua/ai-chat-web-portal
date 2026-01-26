@@ -4,12 +4,16 @@ export interface User {
   firstName: string
   lastName: string
   emailVerified: boolean
-  profileImageUrl?: string
-  phoneNumber?: string
-  dateOfBirth?: string
-  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY'
-  nickname?: string
-  bio?: string
+  profileImageUrl?: string // Legacy field
+  profileImage?: {
+    url: string | null
+    publicId: string | null
+  }
+  phoneNumber?: string | null
+  dateOfBirth?: string | null
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY' | null
+  nickname?: string | null
+  bio?: string | null
   settings?: UserSettings
 }
 

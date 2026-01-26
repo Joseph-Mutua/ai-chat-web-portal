@@ -23,8 +23,8 @@ export async function register(
 }
 
 export async function getUser(): Promise<User> {
-  const { data } = await apiClient.get<User>('/auth/user')
-  return data
+  const { data } = await apiClient.get<{ user: User }>('/auth/user')
+  return data.user
 }
 
 export async function logout(): Promise<void> {
