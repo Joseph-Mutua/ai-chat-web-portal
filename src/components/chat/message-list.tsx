@@ -6,9 +6,12 @@ import type { MessageType } from '@/types'
 
 interface MessageListProps {
   messages: MessageType[]
+  conversationId?: string
+  conversationTitle?: string
+  onOpenReport?: (params: { conversationId: string; messageId: string }) => void
 }
 
-export function MessageList({ messages }: MessageListProps) {
+export function MessageList({ messages, conversationId, conversationTitle, onOpenReport }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
@@ -101,14 +104,21 @@ export function MessageList({ messages }: MessageListProps) {
       onScroll={handleScroll}
       style={{ height: '100%' }}
     >
-      <div className="w-full space-y-4">
+      <div className="flex flex-col w-full space-y-4">
         {messages.length === 0 ? (
           <div className="text-center text-[#827F85] py-12">
             No messages yet. Start the conversation!
           </div>
         ) : (
           messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
+            <MessageBubble 
+              key={message.id} 
+              message={message}
+              allMessages={messages}
+              conversationId={conversationId}
+              conversationTitle={conversationTitle}
+              onOpenReport={onOpenReport}
+            />
           ))
         )}
         <div ref={messagesEndRef} />

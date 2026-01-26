@@ -8,7 +8,7 @@ import { MessageList } from './message-list'
 import { ChatInput } from './chat-input'
 import { ChatEntry } from './chat-entry'
 import { ProfileModal } from './profile-modal'
-import { useSendMessage, useConversationMessages } from '@/hooks/api/use-chat'
+import { useSendMessage, useConversationMessages, useChatConversations } from '@/hooks/api/use-chat'
 import { useSession } from '@/hooks/use-session'
 import { useQueryClient } from '@tanstack/react-query'
 import { ErrorDisplay } from '@/components/ui/error'
@@ -44,6 +44,12 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
     limit: 50,
   })
 
+  // Get conversations list to find the title
+  const { data: conversationsData } = useChatConversations({
+    page: 1,
+    limit: 100,
+  })
+
   // Update current conversation ID when prop changes
   useEffect(() => {
     setCurrentConversationId(conversationId)
@@ -53,7 +59,35 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
   useEffect(() => {
     if (conversationData && currentConversationId) {
       const allMessages = conversationData.pages.flatMap((page) => page.messages)
-      setMessages(allMessages)
+      // Normalize messages to ensure role and conversationId are always set
+      const normalizedMessages = allMessages.map((msg) => {
+        // Determine role: prefer direct role, then metadata.role, default to ASSISTANT
+        // Map "model" to "ASSISTANT" as the API returns "model" instead of "ASSISTANT"
+        let messageRole = msg.role || msg.metadata?.role || 'ASSISTANT'
+        
+        // Normalize "model" to "ASSISTANT" (API returns "model" for assistant messages)
+        if (messageRole === 'model' || messageRole === 'MODEL') {
+          messageRole = 'ASSISTANT'
+        }
+        
+        // Ensure uppercase for consistency
+        if (messageRole === 'user') messageRole = 'USER'
+        if (messageRole === 'assistant') messageRole = 'ASSISTANT'
+        
+        return {
+          ...msg,
+          // Ensure role is set directly
+          role: messageRole as 'USER' | 'ASSISTANT',
+          // Ensure conversationId is always set
+          conversationId: msg.conversationId || currentConversationId,
+          // Ensure metadata.role is also set for consistency (normalized)
+          metadata: {
+            ...msg.metadata,
+            role: messageRole as 'USER' | 'ASSISTANT',
+          },
+        }
+      })
+      setMessages(normalizedMessages)
     } else if (!currentConversationId) {
       setMessages([])
     }
@@ -96,6 +130,14 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       }
 
       // Add assistant response
+      // Normalize metadata.role from "model" to "ASSISTANT" if needed
+      const normalizedMetadata = {
+        ...response.metadata,
+        role: (response.metadata?.role === 'model' || response.metadata?.role === 'MODEL') 
+          ? 'ASSISTANT' 
+          : (response.metadata?.role || 'ASSISTANT'),
+      }
+      
       const assistantMessage: MessageType = {
         id: response.id,
         message: response.message,
@@ -103,7 +145,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
         type: 'assistant',
         createdAt: response.createdAt,
         conversationId: response.conversationId,
-        metadata: response.metadata,
+        metadata: normalizedMetadata,
         citations: response.metadata?.citations,
         attachments: response.attachments,
       }
@@ -129,10 +171,24 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
 
   const hasMessages = messages.length > 0 || currentConversationId
 
+  // Get conversation title from conversations list
+  const conversationTitle = conversationsData?.pages
+    .flatMap((page) => page.data)
+    .find((conv) => conv.id === currentConversationId)?.title || undefined
+
   const { shouldShow: shouldShowBanner, dismissBanner } = useAppBanner({
     messageCount: userMessageCount,
     sessionStartTime: sessionStartTime.current,
   })
+
+  const handleOpenReport = (params: { conversationId: string; messageId: string }) => {
+    // TODO: Implement report modal for web
+    console.log('Open report modal:', params)
+    // For now, we can show an alert or implement a web report modal
+    if (typeof window !== 'undefined') {
+      alert(`Report message: ${params.messageId}\nThis feature will be implemented with a proper modal.`)
+    }
+  }
 
   return (
     <div className="flex h-screen">
@@ -253,7 +309,12 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
           ) : (
             // Conversation view with messages and bottom input
             <>
-              <MessageList messages={messages} />
+              <MessageList 
+                messages={messages}
+                conversationId={currentConversationId}
+                conversationTitle={conversationTitle}
+                onOpenReport={handleOpenReport}
+              />
               <ChatInput
                 onSend={handleSendMessage}
                 isLoading={sendMessage.isPending}

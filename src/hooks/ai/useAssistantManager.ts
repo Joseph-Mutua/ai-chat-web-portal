@@ -120,6 +120,7 @@ export function useAssistantManager(
     (data: AIChatQuery[]): MessageType[] =>
       data.map((data) => ({
         id: data.id,
+        role: data.metadata.role,
         user: {
           firstName:
             data.metadata.role === 'USER' ? userData?.firstName : 'warpSpeed',
