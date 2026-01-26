@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { downloadConversation } from '@/lib/api/chat'
 import { cn } from '@/lib/utils/cn'
 import type { MessageType } from '@/types'
 
@@ -33,7 +31,6 @@ export function MessageBubbleControls({
   isThumbed,
   onOpenReport,
 }: MessageBubbleControlsProps) {
-  const router = useRouter()
   const [showCopyMenu, setShowCopyMenu] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const copyMenuRef = useRef<HTMLDivElement>(null)
@@ -88,47 +85,14 @@ export function MessageBubbleControls({
     }
   }
 
-  const handleExportAnswer = async () => {
-    try {
-      const blob = await downloadConversation(conversationId, {
-        name: conversationTitle || 'Chat Export',
-        type: 'pdf',
-        messageId: messageId,
-      })
-
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${conversationTitle || 'answer'}-${messageId}.pdf`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-      setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Failed to export answer:', err)
-    }
+  const handleExportAnswer = () => {
+    // TODO: Implement export answer functionality
+    setShowDownloadMenu(false)
   }
 
-  const handleExportFullChat = async () => {
-    try {
-      const blob = await downloadConversation(conversationId, {
-        name: conversationTitle || 'Chat Export',
-        type: 'pdf',
-      })
-
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${conversationTitle || 'chat'}-${conversationId}.pdf`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-      setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Failed to export chat:', err)
-    }
+  const handleExportFullChat = () => {
+    // TODO: Implement export full chat functionality
+    setShowDownloadMenu(false)
   }
 
   const handleThumbsUp = () => {

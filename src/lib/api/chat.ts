@@ -75,7 +75,6 @@ export async function downloadConversation(
   params: {
     name: string
     type: 'pdf' | 'docx'
-    content?: string
     messageId?: string
   }
 ): Promise<Blob> {
@@ -84,15 +83,79 @@ export async function downloadConversation(
       ? 'application/pdf'
       : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
-  const { data } = await apiClient.post(
-    `/ai-chat/conversations/${conversationId}/download`,
-    params,
-    {
-      responseType: 'blob',
-      headers: { Accept: accept },
+  try {
+    // Build minimal request body - API rejects 'content' field
+    // Send only: { name, type, messageId? }
+    // API determines export type from messageId presence:
+    // - messageId present = Export Answer
+    // - messageId absent = Export Full Chat
+    const requestBody: Record<string, string> = {
+      name: String(params.name),
+      type: String(params.type),
     }
-  )
-  return data
+
+    // Include messageId only when exporting a specific message (Export Answer)
+    if (params.messageId) {
+      requestBody.messageId = String(params.messageId)
+    }
+
+    const response = await apiClient.post(
+      `/ai-chat/conversations/${conversationId}/download`,
+      requestBody,
+      {
+        responseType: 'blob',
+        headers: { Accept: accept },
+        validateStatus: (status) => status < 500, // Don't throw on 4xx, we'll handle it
+      }
+    )
+
+    // Check if response status indicates an error
+    if (response.status >= 400) {
+      // Try to read error message from blob response
+      if (response.data instanceof Blob) {
+        const errorText = await response.data.text()
+        try {
+          const errorJson = JSON.parse(errorText)
+          throw new Error(errorJson.message || errorJson.error || 'Download failed')
+        } catch (parseError) {
+          throw new Error(errorText || `Download failed with status ${response.status}`)
+        }
+      }
+      throw new Error(`Download failed with status ${response.status}`)
+    }
+
+    // Check if response is actually an error JSON (sometimes API returns JSON as blob)
+    const blob = response.data
+    if (blob.type && blob.type.includes('json')) {
+      const errorText = await blob.text()
+      try {
+        const errorJson = JSON.parse(errorText)
+        if (errorJson.success === false || errorJson.error || errorJson.message) {
+          throw new Error(errorJson.message || errorJson.error || 'Download failed')
+        }
+      } catch (parseError) {
+        // If it's not valid JSON, it might be the actual file
+      }
+    }
+
+    return blob
+  } catch (error: any) {
+    // Handle blob error responses
+    if (error.response?.data instanceof Blob) {
+      const errorText = await error.response.data.text()
+      try {
+        const errorJson = JSON.parse(errorText)
+        throw new Error(errorJson.message || errorJson.error || 'Download failed')
+      } catch (parseError) {
+        throw new Error(errorText || 'Download failed')
+      }
+    }
+    // If error already has a message, use it
+    if (error.message) {
+      throw error
+    }
+    throw new Error(error?.response?.data?.message || 'Download failed')
+  }
 }
 
 export async function getSuggestions(): Promise<SuggestionsResponseType> {
