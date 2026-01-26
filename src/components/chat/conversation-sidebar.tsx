@@ -105,7 +105,9 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
   }
 
   const handleNewChat = () => {
-    router.push('/chat')
+    // Navigate to base chat page to start a new conversation
+    // Add timestamp query parameter to force navigation/remount even if already on /chat
+    router.replace(`/chat?new=${Date.now()}`)
     onClose?.()
   }
 

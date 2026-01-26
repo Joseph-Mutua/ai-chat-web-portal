@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { ConversationSidebar } from './conversation-sidebar'
 import { MessageList } from './message-list'
@@ -23,6 +23,7 @@ interface ChatLayoutProps {
 
 export function ChatLayout({ conversationId }: ChatLayoutProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const queryClient = useQueryClient()
   const { user } = useSession()
   const sendMessage = useSendMessage()
@@ -33,6 +34,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [userMessageCount, setUserMessageCount] = useState(0)
   const sessionStartTime = useRef(Date.now())
+  const justCreatedConversationRef = useRef(false)
 
   const {
     data: conversationData,
@@ -52,15 +54,41 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
 
   // Update current conversation ID when prop changes
   useEffect(() => {
-    setCurrentConversationId(conversationId)
-    // Clear messages and reset state when navigating to new chat (conversationId is undefined)
-    if (!conversationId) {
+    const prevConversationId = currentConversationId
+    
+    // Always sync prop to state
+    if (conversationId !== currentConversationId) {
+      setCurrentConversationId(conversationId)
+    }
+    
+    // Clear messages and reset state when navigating to new chat (conversationId prop is undefined)
+    // This handles both: navigating from /chat/[id] to /chat, and clicking New Chat while on /chat
+    if (!conversationId && prevConversationId) {
+      // New chat - clear everything (we had a conversation ID before, now we don't)
+      setMessages([])
+      setError(null)
+      setUserMessageCount(0)
+      sessionStartTime.current = Date.now()
+    } else if (conversationId && conversationId !== prevConversationId) {
+      // Switching to a different conversation - clear messages (they'll be loaded by the new conversation)
+      setMessages([])
+      setError(null)
+    }
+  }, [conversationId]) // Only depend on prop to avoid loops
+
+  // Reset when on /chat route with no conversationId prop but we have state (handles New Chat button)
+  useEffect(() => {
+    // If we're on /chat route and prop is undefined, ensure state is also reset
+    // But don't reset if we just created a conversation (to avoid clearing messages)
+    if (pathname === '/chat' && !conversationId && currentConversationId && !justCreatedConversationRef.current) {
+      // Reset to new chat state
+      setCurrentConversationId(undefined)
       setMessages([])
       setError(null)
       setUserMessageCount(0)
       sessionStartTime.current = Date.now()
     }
-  }, [conversationId])
+  }, [pathname, conversationId, currentConversationId])
 
   // Update messages when conversation data changes
   useEffect(() => {
@@ -141,14 +169,14 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       const isNewConversation = !currentConversationId && response.conversationId
       if (isNewConversation) {
         setCurrentConversationId(response.conversationId)
-        // Update URL in the background without navigation
-        if (typeof window !== 'undefined') {
-          window.history.replaceState(
-            { ...window.history.state, as: `/chat/${response.conversationId}` },
-            '',
-            `/chat/${response.conversationId}`
-          )
-        }
+        // Mark that we just created a conversation to prevent reset
+        justCreatedConversationRef.current = true
+        // Clear the flag after a short delay
+        setTimeout(() => {
+          justCreatedConversationRef.current = false
+        }, 1000)
+        // Don't update URL here - keep it as /chat to avoid navigation issues
+        // The URL will update naturally if user navigates or refreshes
       }
 
       // Normalize metadata.role from "model" to "ASSISTANT" if needed
