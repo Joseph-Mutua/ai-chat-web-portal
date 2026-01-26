@@ -33,12 +33,10 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
   const handleScroll = useCallback(() => {
     if (!containerRef.current || isScrollingRef.current) return
     
-    // Clear any pending scroll timeout
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current)
     }
 
-    // Check if user is at bottom - if not, disable auto-scroll
     const atBottom = isAtBottom()
     setShouldAutoScroll(atBottom)
   }, [isAtBottom])
@@ -87,7 +85,6 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
   // Auto-scroll on initial load only
   useEffect(() => {
     if (messages.length > 0 && containerRef.current) {
-      // Check if we're already at bottom (initial load)
       const isAtBottom = containerRef.current.scrollHeight === containerRef.current.clientHeight
       if (isAtBottom) {
         setTimeout(() => {
@@ -95,7 +92,7 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
         }, 100)
       }
     }
-  }, []) // Only run once on mount
+  }, []) 
 
   return (
     <div

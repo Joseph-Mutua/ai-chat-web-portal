@@ -1,13 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { useQueries } from '@tanstack/react-query'
 import { useChatConversations } from '@/hooks/api/use-chat'
+import { getConversationMessages } from '@/lib/api/chat'
 import { Loading } from '@/components/ui/loading'
 import { cn } from '@/lib/utils/cn'
 import logoImage from '@/assets/images/logo.png'
 import type { IChatSession } from '@/types'
+
+// Generate a conversation title from a message
+function generateConversationTitle(message: string | undefined | null): string {
+  if (!message || message.trim() === '') {
+    return 'New Conversation'
+  }
+  
+  // Clean up the message: remove markdown, extra whitespace, etc.
+  let cleanMessage = message
+    .replace(/#{1,6}\s+/g, '') // Remove markdown headers
+    .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold
+    .replace(/\*([^*]+)\*/g, '$1') // Remove italic
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links
+    .replace(/\n+/g, ' ') // Replace newlines with spaces
+    .trim()
+  
+  // Truncate to 50 characters
+  if (cleanMessage.length > 50) {
+    cleanMessage = cleanMessage.substring(0, 50).trim() + '...'
+  }
+  
+  return cleanMessage || 'New Conversation'
+}
 
 interface ConversationSidebarProps {
   isOpen?: boolean
@@ -32,6 +57,47 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
 
   const conversations = data?.pages.flatMap((page) => page.data) || []
   const groupedConversations = groupConversationsByDate(conversations)
+
+  // Get conversations that need titles (no title and no lastMessage)
+  const conversationsNeedingTitles = useMemo(() => {
+    return conversations.filter(conv => !conv.title && !conv.lastMessage)
+  }, [conversations])
+
+  // Fetch first message for conversations without titles
+  const firstMessageQueries = useQueries({
+    queries: conversationsNeedingTitles.map((conv) => ({
+      queryKey: ['conversation-first-message', conv.id],
+      queryFn: async () => {
+        try {
+          const response = await getConversationMessages({
+            chatConversationId: conv.id,
+            page: 1,
+            limit: 1,
+          })
+          // Get the first user message
+          const firstUserMessage = response.messages.find(
+            (msg: any) => msg.role === 'USER' || msg.metadata?.role === 'USER'
+          )
+          return { conversationId: conv.id, firstMessage: firstUserMessage?.message || null }
+        } catch (error) {
+          return { conversationId: conv.id, firstMessage: null }
+        }
+      },
+      enabled: !!conv.id && !conv.title && !conv.lastMessage,
+      staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    })),
+  })
+
+  // Create a map of conversationId -> first message
+  const firstMessagesMap = useMemo(() => {
+    const map: Record<string, string | null> = {}
+    firstMessageQueries.forEach((query) => {
+      if (query.data) {
+        map[query.data.conversationId] = query.data.firstMessage
+      }
+    })
+    return map
+  }, [firstMessageQueries])
 
   const handleConversationClick = (id: string) => {
     router.push(`/chat/${id}`)
@@ -132,6 +198,11 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                       <p className="text-xs text-[#827F85] px-4 py-1 uppercase">{date}</p>
                       {convos.map((conversation) => {
                         const isActive = pathname === `/chat/${conversation.id}`
+                        // Get title: use conversation.title, or lastMessage, or fetch first message
+                        const title = conversation.title 
+                          || conversation.lastMessage 
+                          || firstMessagesMap[conversation.id] 
+                          || null
                         return (
                           <button
                             key={conversation.id}
@@ -141,7 +212,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                               isActive && 'bg-[#E8F5F5] text-[#1A7A7A]'
                             )}
                           >
-                            {conversation.title || 'New Conversation'}
+                            {generateConversationTitle(title)}
                           </button>
                         )
                       })}

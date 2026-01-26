@@ -53,6 +53,13 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
   // Update current conversation ID when prop changes
   useEffect(() => {
     setCurrentConversationId(conversationId)
+    // Clear messages and reset state when navigating to new chat (conversationId is undefined)
+    if (!conversationId) {
+      setMessages([])
+      setError(null)
+      setUserMessageCount(0)
+      sessionStartTime.current = Date.now()
+    }
   }, [conversationId])
 
   // Update messages when conversation data changes
@@ -95,6 +102,35 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
 
   const handleSendMessage = async (messageText: string) => {
     setError(null)
+    
+    // Add user message immediately
+    const userMessage: MessageType = {
+      id: `temp-user-${Date.now()}`,
+      message: messageText,
+      role: 'USER',
+      type: 'message',
+      createdAt: new Date().toISOString(),
+      conversationId: currentConversationId,
+      user: {
+        firstName: user?.firstName || 'You',
+        me: true,
+      },
+    }
+
+    // Add pending assistant message with typing animation
+    const pendingAssistantMessage: MessageType = {
+      id: `temp-pending-${Date.now()}`,
+      message: '',
+      role: 'ASSISTANT',
+      type: 'assistant',
+      createdAt: new Date().toISOString(),
+      conversationId: currentConversationId,
+      metadata: { role: 'ASSISTANT' },
+    }
+
+    // Add user message and pending assistant message immediately
+    setMessages((prev) => [...prev, userMessage, pendingAssistantMessage])
+    
     try {
       const response = await sendMessage.mutateAsync({
         message: messageText,
@@ -115,21 +151,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
         }
       }
 
-      // Add user message immediately (optimistic update)
-      const userMessage: MessageType = {
-        id: `temp-${Date.now()}`,
-        message: messageText,
-        role: 'USER',
-        type: 'message',
-        createdAt: new Date().toISOString(),
-        conversationId: response.conversationId,
-        user: {
-          firstName: user?.firstName || 'You',
-          me: true,
-        },
-      }
-
-      // Add assistant response
       // Normalize metadata.role from "model" to "ASSISTANT" if needed
       const normalizedMetadata = {
         ...response.metadata,
@@ -138,6 +159,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
           : (response.metadata?.role || 'ASSISTANT'),
       }
       
+      // Replace pending message with actual assistant response
       const assistantMessage: MessageType = {
         id: response.id,
         message: response.message,
@@ -150,8 +172,18 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
         attachments: response.attachments,
       }
 
-      // Add messages optimistically
-      setMessages((prev) => [...prev, userMessage, assistantMessage])
+      // Replace pending message with actual message
+      setMessages((prev) => {
+        const newMessages = [...prev]
+        const pendingIndex = newMessages.findIndex(msg => msg.id === pendingAssistantMessage.id)
+        if (pendingIndex !== -1) {
+          newMessages[pendingIndex] = assistantMessage
+        } else {
+          // If pending message not found, just add the assistant message
+          newMessages.push(assistantMessage)
+        }
+        return newMessages
+      })
       
       // Increment user message count for banner logic
       setUserMessageCount((prev) => prev + 1)
@@ -164,8 +196,12 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       }, 1500)
     } catch (err) {
       setError(getErrorMessage(err))
-      // Remove optimistic messages on error
-      setMessages((prev) => prev.slice(0, -2))
+      // Remove user message and pending assistant message on error
+      setMessages((prev) => {
+        return prev.filter(msg => 
+          msg.id !== userMessage.id && msg.id !== pendingAssistantMessage.id
+        )
+      })
     }
   }
 
@@ -201,7 +237,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#F4F5FA]">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 border-b border-[#EBEBEB] bg-white">
+        <header className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 bg-[#F4F5FA]">
           {/* Mobile: Logo and menu */}
           <div className="flex items-center gap-3 lg:hidden">
             <Image
