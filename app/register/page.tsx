@@ -1,175 +1,77 @@
 'use client'
 
-import { useState } from 'react'
+import { RegisterFormNew } from '@/components/auth/register-form-new'
+import { LoginPreviewPanel } from '@/components/auth/login-preview-panel'
+import { useSession } from '@/hooks/use-session'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useRegister } from '@/hooks/api/use-auth'
-import { getErrorMessage } from '@/lib/utils/errors'
+import { LoadingContainer } from '@/components/ui/loading'
+import Image from 'next/image'
+import logoImage from '@/assets/images/logo.png'
 
 export default function RegisterPage() {
+  const { isAuthenticated, isLoading } = useSession()
   const router = useRouter()
-  const register = useRegister()
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
-  const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    // Validation
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
-      setError('Please fill in all fields')
-      return
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push('/chat')
     }
+  }, [isAuthenticated, isLoading, router])
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long')
-      return
-    }
-
-    try {
-      await register.mutateAsync({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      })
-    } catch (err) {
-      setError(getErrorMessage(err))
-    }
+  if (isLoading) {
+    return <LoadingContainer />
   }
 
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (error) setError('')
+  if (isAuthenticated) {
+    return null
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-text mb-2">Create Account</h1>
-          <p className="text-text-secondary">
-            Sign up to get started with warpSpeed AI Chat
-          </p>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white lg:relative lg:overflow-hidden">
+      {/* Mobile/Tablet Header - shows below lg (1024px) */}
+      <div className="lg:hidden bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <Image
+            src={logoImage}
+            alt="warpSpeed"
+            width={28}
+            height={28}
+            className="w-7 h-7 object-contain"
+          />
+          <span className="text-[#1E1E1E] font-semibold text-base">warpSpeed</span>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="First Name"
-              value={formData.firstName}
-              onChange={(e) => handleChange('firstName', e.target.value)}
-              placeholder="John"
-              required
-              autoComplete="given-name"
+        <button className="p-2 text-[#1E1E1E]">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
             />
-            <Input
-              label="Last Name"
-              value={formData.lastName}
-              onChange={(e) => handleChange('lastName', e.target.value)}
-              placeholder="Doe"
-              required
-              autoComplete="family-name"
-            />
-          </div>
+          </svg>
+        </button>
+      </div>
 
-          <Input
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            placeholder="john@example.com"
-            required
-            autoComplete="email"
-          />
+      {/* Desktop Layout - Only shows at lg (1024px) and above */}
+      <div className="hidden lg:block lg:relative lg:w-full lg:min-h-screen lg:bg-white">
+        {/* Left Panel - AI Chat Preview */}
+        <LoginPreviewPanel />
 
-          <Input
-            label="Password"
-            type="password"
-            value={formData.password}
-            onChange={(e) => handleChange('password', e.target.value)}
-            placeholder="At least 8 characters"
-            required
-            autoComplete="new-password"
-          />
-
-          <Input
-            label="Confirm Password"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={(e) => handleChange('confirmPassword', e.target.value)}
-            placeholder="Re-enter your password"
-            required
-            autoComplete="new-password"
-          />
-
-          {error && (
-            <div className="text-sm text-error bg-error/10 p-3 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            isLoading={register.isPending}
-          >
-            Create Account
-          </Button>
-        </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border-light" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-background text-text-secondary">
-              Or continue with
-            </span>
-          </div>
+        {/* Right Panel - Registration Form */}
+        <div className="absolute top-0 left-[50%] right-0 h-full bg-white flex items-center justify-center">
+          <RegisterFormNew />
         </div>
+      </div>
 
-        <div className="space-y-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => router.push('/auth/callback?provider=google')}
-          >
-            Continue with Google
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => router.push('/auth/callback?provider=apple')}
-          >
-            Continue with Apple
-          </Button>
-        </div>
-
-        <p className="text-center text-sm text-text-secondary">
-          Already have an account?{' '}
-          <Link href="/login" className="text-primary hover:underline">
-            Sign in
-          </Link>
-        </p>
+      {/* Mobile/Tablet Layout - shows below lg (1024px) */}
+      <div className="lg:hidden flex-1 w-full bg-white">
+        <RegisterFormNew />
       </div>
     </div>
   )
