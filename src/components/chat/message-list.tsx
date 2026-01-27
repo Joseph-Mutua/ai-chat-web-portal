@@ -20,16 +20,16 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
 
-  // Check if user is at the very bottom of the scroll container
+
   const isAtBottom = useCallback(() => {
     if (!containerRef.current) return true
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-    // Very strict threshold - only auto-scroll if within 10px of bottom
+  
     const threshold = 10
     return scrollHeight - scrollTop - clientHeight < threshold
   }, [])
 
-  // Handle scroll events to detect manual scrolling
+
   const handleScroll = useCallback(() => {
     if (!containerRef.current || isScrollingRef.current) return
     
@@ -41,13 +41,12 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     setShouldAutoScroll(atBottom)
   }, [isAtBottom])
 
-  // Auto-scroll only when new messages are actually added (by checking last message ID)
   useEffect(() => {
     const lastMessage = messages[messages.length - 1]
     const lastMessageId = lastMessage?.id
     const hasNewMessages = lastMessageId && lastMessageId !== lastMessageIdRef.current
     
-    // Update refs
+    
     previousMessagesLength.current = messages.length
     if (lastMessageId) {
       lastMessageIdRef.current = lastMessageId
@@ -65,14 +64,13 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
       containerRef.current &&
       messagesEndRef.current
     ) {
-      // Double-check user is still at bottom before scrolling
       const stillAtBottom = isAtBottom()
       if (stillAtBottom) {
         isScrollingRef.current = true
         setTimeout(() => {
           if (messagesEndRef.current && containerRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-            // Reset scrolling flag after animation
+           
             setTimeout(() => {
               isScrollingRef.current = false
             }, 500)
@@ -82,7 +80,6 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     }
   }, [messages, shouldAutoScroll, isAtBottom])
 
-  // Auto-scroll on initial load only
   useEffect(() => {
     if (messages.length > 0 && containerRef.current) {
       const isAtBottom = containerRef.current.scrollHeight === containerRef.current.clientHeight

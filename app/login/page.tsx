@@ -1,6 +1,6 @@
 'use client'
 
-import { LoginFormNew } from '@/components/auth/login-form-new'
+import { LoginForm } from '@/components/auth/login-form'
 import { LoginPreviewPanel } from '@/components/auth/login-preview-panel'
 import { useSession } from '@/hooks/use-session'
 import { useEffect } from 'react'
@@ -65,7 +65,7 @@ export default function LoginPage() {
 
         {/* Right Panel - Login Form */}
         <div className="absolute top-0 left-[50%] right-0 h-full bg-white flex items-center justify-center">
-          <LoginFormNew />
+          <LoginForm />
         </div>
       </div>
 

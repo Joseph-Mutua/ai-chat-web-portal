@@ -12,13 +12,12 @@ import { AccountDetailsModal } from './account-details-modal'
 import logoImage from '@/assets/images/logo.png'
 import type { IChatSession } from '@/types'
 
-// Generate a conversation title from a message
+
 function generateConversationTitle(message: string | undefined | null): string {
   if (!message || message.trim() === '') {
     return 'New Conversation'
   }
   
-  // Clean up the message: remove markdown, extra whitespace, etc.
   let cleanMessage = message
     .replace(/#{1,6}\s+/g, '') // Remove markdown headers
     .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold
@@ -60,7 +59,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
   const conversations = data?.pages.flatMap((page) => page.data) || []
   const groupedConversations = groupConversationsByDate(conversations)
 
-  // Get conversations that need titles (no title and no lastMessage)
+
   const conversationsNeedingTitles = useMemo(() => {
     return conversations.filter(conv => !conv.title && !conv.lastMessage)
   }, [conversations])
@@ -76,7 +75,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             page: 1,
             limit: 1,
           })
-          // Get the first user message
+        
           const firstUserMessage = response.messages.find(
             (msg: any) => msg.role === 'USER' || msg.metadata?.role === 'USER'
           )
@@ -90,7 +89,6 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
     })),
   })
 
-  // Create a map of conversationId -> first message
   const firstMessagesMap = useMemo(() => {
     const map: Record<string, string | null> = {}
     firstMessageQueries.forEach((query) => {
@@ -107,8 +105,6 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
   }
 
   const handleNewChat = () => {
-    // Navigate to base chat page to start a new conversation
-    // Add timestamp query parameter to force navigation/remount even if already on /chat
     router.replace(`/chat?new=${Date.now()}`)
     onClose?.()
   }
@@ -119,7 +115,6 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
 
   return (
     <>
-      {/* Mobile overlay - only show on mobile when sidebar is open */}
       {isOpen && (
         <div 
           className="lg:hidden fixed inset-0 bg-black/50 z-40"
@@ -130,12 +125,11 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
       <aside
         className={cn(
           'w-[280px] bg-white flex flex-col h-full transition-transform duration-300',
-          // Mobile: fixed, slides in/out from right
+      
           'fixed inset-y-0 right-0 z-50',
-          // Desktop: static, always visible on left
+        
           'lg:static lg:left-0 lg:right-auto lg:z-auto',
-          // Mobile: toggle visibility - slide from right (translate-x-full = hidden to right, translate-x-0 = visible)
-          // Desktop: always visible (translate-x-0)
+      
           isOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
         )}
       >
@@ -152,7 +146,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             />
             <span className="text-[#1E1E1E] font-semibold text-lg">warpSpeed</span>
           </div>
-          {/* Close Button - Mobile Only */}
+    
           <button
             onClick={onClose}
             className="lg:hidden p-2 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-lg transition-colors ml-auto"
@@ -163,9 +157,9 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
           </button>
         </div>
 
-        {/* Navigation */}
+  
         <nav className="px-4 flex-1">
-          {/* New Chat */}
+        
           <button
             onClick={handleNewChat}
             className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
@@ -252,11 +246,10 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
           {/* Settings / Account Details */}
           <button
             onClick={() => {
-              // On mobile, open Account Details modal and close sidebar
-              // On desktop, navigate to settings (TODO)
+      
               if (typeof window !== 'undefined' && window.innerWidth < 1024) {
                 setIsAccountDetailsModalOpen(true)
-                onClose?.() // Close sidebar when opening modal
+                onClose?.()
               } else {
                 // TODO: Navigate to settings
               }
@@ -285,10 +278,10 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
           </button>
         </nav>
 
-        {/* Upgrade Card */}
+
         <div className="p-4 mt-auto">
           <div className="bg-[#FFF8E1] rounded-2xl p-5">
-            {/* Golden Diamond/Crown Icon */}
+      
             <div className="flex justify-center mb-3">
               <div 
                 className="w-14 h-14 bg-gradient-to-br from-[#FFD54F] via-[#FFC107] to-[#FF8F00] flex items-center justify-center shadow-lg"
@@ -305,14 +298,13 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             <p className="text-center text-xs text-[#827F85] mb-4 leading-relaxed">
               Enjoy more credits and use evenmore AI in your day!
             </p>
-            <button className="w-full py-2.5 bg-[#FFF8E1] border border-[#FFD54F]/30 rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#FFECB3] transition-colors">
+            <button className="w-full py-2.5 bg-white border border-[#EBEBEB] rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors">
               Learn More
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Account Details Modal - Mobile Only */}
       <AccountDetailsModal
         isOpen={isAccountDetailsModalOpen}
         onClose={() => {

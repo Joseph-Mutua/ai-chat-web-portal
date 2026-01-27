@@ -105,14 +105,14 @@ export function MessageBubble({
 
   return (
     <div className="w-full mb-6 flex flex-row">
-      {/* 🔑 Alignment happens HERE */}
+ 
       <div
         className={cn(
           'flex flex-col',
           isUser ? 'ml-auto items-end' : 'mr-auto items-start'
         )}
       >
-        {/* Message Bubble */}
+  
         <div
           className={cn(
             'rounded-2xl px-4 py-3',
@@ -124,7 +124,7 @@ export function MessageBubble({
           {/* Message Content */}
           {isAssistant ? (
             isPending ? (
-              // Show typing animation for pending messages
+             
               <div className="flex items-center justify-start py-2">
                 <Image
                   src={typingGif}
@@ -137,7 +137,7 @@ export function MessageBubble({
               </div>
             ) : (
               <>
-                {/* Small logo above assistant message - Mobile only */}
+            
                 <div className="lg:hidden mb-2">
                   <Image
                     src={logoImage}
@@ -193,7 +193,6 @@ export function MessageBubble({
           )}
         </div>
 
-        {/* Controls — AI only, aligned left (not for pending messages) */}
         {isAssistant && !isPending && conversationId && (
           <MessageBubbleControls
             message={message.message || ''}
