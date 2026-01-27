@@ -85,7 +85,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
         }
       },
       enabled: !!conv.id && !conv.title && !conv.lastMessage,
-      staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+      staleTime: 5 * 60 * 1000,
     })),
   })
 
@@ -144,12 +144,12 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
               height={32}
               className="w-8 h-8 object-contain"
             />
-            <span className="text-[#1E1E1E] font-semibold text-lg">warpSpeed</span>
+            <span className="text-text font-semibold text-lg">warpSpeed</span>
           </div>
     
           <button
             onClick={onClose}
-            className="lg:hidden p-2 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-lg transition-colors ml-auto"
+            className="lg:hidden p-2 text-text hover:bg-background rounded-lg transition-colors ml-auto"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -162,7 +162,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
         
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-text hover:bg-background rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -174,8 +174,8 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
           <button
             onClick={handleChatHistory}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors",
-              showHistory && "bg-[#F4F5FA]"
+              "w-full flex items-center gap-3 px-4 py-3 text-text hover:bg-background rounded-xl transition-colors",
+              showHistory && "bg-background"
             )}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -193,7 +193,6 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             </svg>
           </button>
 
-          {/* Chat History List - Collapsible */}
           {showHistory && (
             <div className="ml-4 mt-2 max-h-[300px] overflow-y-auto">
               {isLoading ? (
@@ -201,12 +200,12 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                   <Loading />
                 </div>
               ) : conversations.length === 0 ? (
-                <p className="text-sm text-[#827F85] px-4 py-2">No conversations yet</p>
+                <p className="text-sm text-grey px-4 py-2">No conversations yet</p>
               ) : (
                 <div className="space-y-1">
                   {Object.entries(groupedConversations).map(([date, convos]) => (
                     <div key={date}>
-                      <p className="text-xs text-[#827F85] px-4 py-1 uppercase">{date}</p>
+                      <p className="text-xs text-grey px-4 py-1 uppercase">{date}</p>
                       {convos.map((conversation) => {
                         const isActive = pathname === `/chat/${conversation.id}`
                         // Get title: use conversation.title, or lastMessage, or fetch first message
@@ -219,8 +218,8 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                             key={conversation.id}
                             onClick={() => handleConversationClick(conversation.id)}
                             className={cn(
-                              'w-full px-4 py-2 text-left text-sm hover:bg-[#F4F5FA] rounded-lg transition-colors truncate',
-                              isActive && 'bg-[#E8F5F5] text-[#1A7A7A]'
+                              'w-full px-4 py-2 text-left text-sm hover:bg-background rounded-lg transition-colors truncate',
+                              isActive && 'bg-primary-light text-primary-dark'
                             )}
                           >
                             {generateConversationTitle(title)}
@@ -233,7 +232,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                     <button
                       onClick={() => fetchNextPage()}
                       disabled={isFetchingNextPage}
-                      className="w-full px-4 py-2 text-xs text-[#1A7A7A] hover:bg-[#F4F5FA] rounded-lg"
+                      className="w-full px-4 py-2 text-xs text-primary-dark hover:bg-background rounded-lg"
                     >
                       {isFetchingNextPage ? 'Loading...' : 'Load more'}
                     </button>
@@ -292,13 +291,13 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                 </svg>
               </div>
             </div>
-            <h3 className="text-center font-bold text-[#1E1E1E] mb-1 text-base">
+            <h3 className="text-center font-bold text-text mb-1 text-base">
               Upgrade Your Plan
             </h3>
-            <p className="text-center text-xs text-[#827F85] mb-4 leading-relaxed">
+            <p className="text-center text-xs text-grey mb-4 leading-relaxed">
               Enjoy more credits and use evenmore AI in your day!
             </p>
-            <button className="w-full py-2.5 bg-white border border-[#EBEBEB] rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors">
+            <button className="w-full py-2.5 bg-background-light border border-border rounded-full text-sm font-medium text-text hover:bg-background transition-colors">
               Learn More
             </button>
           </div>

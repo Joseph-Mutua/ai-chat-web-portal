@@ -71,7 +71,7 @@ export default function LoginPage() {
 
       {/* Mobile/Tablet Layout - shows below lg (1024px) */}
       <div className="lg:hidden flex-1 w-full bg-white">
-        <LoginFormNew />
+        <LoginForm />
       </div>
     </div>
   )

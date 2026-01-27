@@ -15,6 +15,8 @@ module.exports = {
           50: '#006C6780',
           30: '#006C674D',
           light: '#E9F7F6',
+          dark: '#1A7A7A', // Used in focus states
+          darker: '#156666', // Used in hover states
         },
         secondary: {
           DEFAULT: '#531CB3',
@@ -26,7 +28,10 @@ module.exports = {
           medium: '#CEB8F2',
         },
         error: '#BE1E2D',
-        background: '#F4F5FA',
+        background: {
+          DEFAULT: '#F4F5FA',
+          light: '#FFFFFF',
+        },
         grey: {
           DEFAULT: '#827F85',
           light: '#EBEBEB',
@@ -34,6 +39,7 @@ module.exports = {
         text: {
           DEFAULT: '#1E1E1E',
           secondary: '#6B6B6B',
+          placeholder: '#A0A0A0', // From Colors.ts inputPlaceholder
         },
         // Additional brand colors
         green: {
@@ -58,6 +64,7 @@ module.exports = {
         border: {
           light: '#E2E2E2',
           grey: '#D7DBE6',
+          DEFAULT: '#EBEBEB', // From Colors.ts greyLight
         },
       },
       fontFamily: {

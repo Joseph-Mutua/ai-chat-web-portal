@@ -54,14 +54,14 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
         {/* Heading - Different for mobile vs desktop */}
         <div className="text-center mb-6">
           {/* Mobile heading */}
-          <h1 className="lg:hidden text-2xl font-normal text-text">
+          <h1 className="lg:hidden text-2xl font-normal text-[#1E1E1E]">
             Sign in to access your AI partner
           </h1>
           {/* Desktop heading */}
-          <h1 className="hidden lg:block text-2xl font-bold text-text mb-2">
+          <h1 className="hidden lg:block text-2xl font-bold text-[#1E1E1E] mb-2">
             Let&apos;s get you started
           </h1>
-          <p className="hidden lg:block text-sm text-grey">
+          <p className="hidden lg:block text-sm text-[#827F85]">
             Sign up to experience AI that actually understands
             <br />
             your workflow
@@ -72,7 +72,7 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-text">
+            <label className="block text-sm font-medium text-[#1E1E1E]">
               Email
             </label>
             <input
@@ -82,13 +82,13 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
               placeholder="Enter Email ID"
               required
               autoComplete="email"
-              className="w-full px-4 py-3.5 bg-background border border-border rounded-xl text-text placeholder:text-text-placeholder text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-primary-dark transition-colors"
+              className="w-full px-4 py-3.5 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#A0A0A0] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
             />
           </div>
 
           {/* Password Input */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-text">
+            <label className="block text-sm font-medium text-[#1E1E1E]">
               Password
             </label>
             <div className="relative">
@@ -99,12 +99,12 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
                 placeholder="Enter Password"
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-3.5 pr-12 bg-background border border-border rounded-xl text-text placeholder:text-text-placeholder text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-primary-dark transition-colors"
+                className="w-full px-4 py-3.5 pr-12 bg-[#F4F5FA] border border-[#EBEBEB] rounded-xl text-[#1E1E1E] placeholder:text-[#A0A0A0] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7A7A] focus:border-[#1A7A7A] transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-placeholder hover:text-text transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A0A0A0] hover:text-[#1E1E1E] transition-colors"
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +131,7 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
           <button
             type="submit"
             disabled={login.isPending}
-            className="w-full py-4 mt-2 bg-primary-dark hover:bg-primary-darker text-white text-base font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-4 mt-2 bg-[#1A7A7A] hover:bg-[#156666] text-white text-base font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {login.isPending ? (
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -147,10 +147,10 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
         {/* Divider */}
         <div className="relative py-4">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
+            <div className="w-full border-t border-[#EBEBEB]" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-background-light text-text-placeholder">Or</span>
+            <span className="px-4 bg-white text-[#A0A0A0]">Or</span>
           </div>
         </div>
 
@@ -160,7 +160,7 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
           <button
             type="button"
             onClick={() => router.push('/auth/callback?provider=google')}
-            className="w-full py-3.5 bg-background-light border border-border rounded-full text-text text-sm font-medium hover:bg-background transition-colors flex items-center justify-center gap-3"
+            className="w-full py-3.5 bg-white border border-[#EBEBEB] rounded-full text-[#1E1E1E] text-sm font-medium hover:bg-[#F4F5FA] transition-colors flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -175,7 +175,7 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
           <button
             type="button"
             onClick={() => router.push('/auth/callback?provider=apple')}
-            className="w-full py-3.5 bg-background-light border border-border rounded-full text-text text-sm font-medium hover:bg-background transition-colors flex items-center justify-center gap-3"
+            className="w-full py-3.5 bg-white border border-[#EBEBEB] rounded-full text-[#1E1E1E] text-sm font-medium hover:bg-[#F4F5FA] transition-colors flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
@@ -185,15 +185,15 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
         </div>
 
         {/* Desktop Privacy Text - only shows on desktop */}
-        <p className="hidden lg:block text-xs text-center text-grey mt-6">
+        <p className="hidden lg:block text-xs text-center text-[#827F85] mt-6">
           We respect your privacy. You can unlink your account anytime.
         </p>
 
         {/* Footer Link - Different for mobile vs desktop */}
         {/* Mobile footer */}
-        <p className="lg:hidden text-sm text-center text-grey mt-6">
+        <p className="lg:hidden text-sm text-center text-[#827F85] mt-6">
           Don&apos;t have an account?{' '}
-          <Link href="#" className="text-primary-dark hover:underline font-medium">
+          <Link href="#" className="text-[#1A7A7A] hover:underline font-medium">
             Download our app
           </Link>
           <br />
@@ -201,9 +201,9 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
         </p>
         
         {/* Desktop footer */}
-        <p className="hidden lg:block text-sm text-center text-grey mt-6">
+        <p className="hidden lg:block text-sm text-center text-[#827F85] mt-6">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-secondary underline font-medium">
+          <Link href="/register" className="text-[#531CB3] underline font-medium">
             Find out more
           </Link>
         </p>

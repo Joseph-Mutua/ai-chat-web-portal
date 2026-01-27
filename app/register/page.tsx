@@ -29,7 +29,6 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white lg:relative lg:overflow-hidden">
-      {/* Mobile/Tablet Header - shows below lg (1024px) */}
       <div className="lg:hidden bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
           <Image
@@ -58,18 +57,17 @@ export default function RegisterPage() {
         </button>
       </div>
 
-      {/* Desktop Layout - Only shows at lg (1024px) and above */}
+    
       <div className="hidden lg:block lg:relative lg:w-full lg:min-h-screen lg:bg-white">
-        {/* Left Panel - AI Chat Preview */}
+  
         <LoginPreviewPanel />
 
-        {/* Right Panel - Registration Form */}
         <div className="absolute top-0 left-[50%] right-0 h-full bg-white flex items-center justify-center">
           <RegisterFormNew />
         </div>
       </div>
 
-      {/* Mobile/Tablet Layout - shows below lg (1024px) */}
+
       <div className="lg:hidden flex-1 w-full bg-white">
         <RegisterFormNew />
       </div>

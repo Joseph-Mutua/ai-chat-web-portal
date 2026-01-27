@@ -9,8 +9,7 @@
   }
 
   body {
-    background-color: #F4F5FA;
-    color: #1E1E1E;
+    @apply bg-background text-text;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -23,66 +22,57 @@
   }
 
   ::-webkit-scrollbar-track {
-    background-color: #F4F5FA;
+    @apply bg-background;
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #EBEBEB;
+    @apply bg-grey-light;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: #827F85;
+    @apply bg-grey;
   }
 }
 
 @layer components {
   /* Markdown prose styles for chat messages */
   .prose {
-    color: #1E1E1E;
+    @apply text-text;
   }
 
   .prose p {
-    @apply mb-2 last:mb-0;
-    color: #1E1E1E;
+    @apply mb-2 last:mb-0 text-text;
   }
 
   .prose code {
-    @apply px-1.5 py-0.5 rounded text-sm;
-    background-color: #F4F5FA;
-    color: #1E1E1E;
+    @apply px-1.5 py-0.5 rounded text-sm bg-background text-text;
   }
 
   .prose pre {
-    @apply p-3 rounded-lg overflow-x-auto;
-    background-color: #F4F5FA;
+    @apply p-3 rounded-lg overflow-x-auto bg-background;
   }
 
   .prose pre code {
     @apply bg-transparent p-0;
-    background-color: transparent;
   }
 
   .prose ul,
   .prose ol {
-    @apply ml-4 mb-2;
-    color: #1E1E1E;
+    @apply ml-4 mb-2 text-text;
   }
 
   .prose li {
-    @apply mb-1;
-    color: #1E1E1E;
+    @apply mb-1 text-text;
   }
 
   .prose a {
-    @apply underline;
-    color: #006C67;
+    @apply underline text-primary;
   }
 
   .prose h1,
   .prose h2,
   .prose h3 {
-    @apply font-semibold mb-2;
-    color: #1E1E1E;
+    @apply font-semibold mb-2 text-text;
   }
 }
