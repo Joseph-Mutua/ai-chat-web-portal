@@ -8,6 +8,7 @@ import { useChatConversations } from '@/hooks/api/use-chat'
 import { getConversationMessages } from '@/lib/api/chat'
 import { Loading } from '@/components/ui/loading'
 import { cn } from '@/lib/utils/cn'
+import { AccountDetailsModal } from './account-details-modal'
 import logoImage from '@/assets/images/logo.png'
 import type { IChatSession } from '@/types'
 
@@ -43,6 +44,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
   const router = useRouter()
   const pathname = usePathname()
   const [showHistory, setShowHistory] = useState(false)
+  const [isAccountDetailsModalOpen, setIsAccountDetailsModalOpen] = useState(false)
 
   const {
     data,
@@ -128,24 +130,37 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
       <aside
         className={cn(
           'w-[280px] bg-white flex flex-col h-full transition-transform duration-300',
-          // Mobile: fixed, slides in/out
-          'fixed inset-y-0 left-0 z-50 lg:z-auto',
-          // Desktop: static, always visible
-          'lg:static lg:translate-x-0',
-          // Mobile: toggle visibility
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          // Mobile: fixed, slides in/out from right
+          'fixed inset-y-0 right-0 z-50',
+          // Desktop: static, always visible on left
+          'lg:static lg:left-0 lg:right-auto lg:z-auto',
+          // Mobile: toggle visibility - slide from right (translate-x-full = hidden to right, translate-x-0 = visible)
+          // Desktop: always visible (translate-x-0)
+          isOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
         )}
       >
-        {/* Logo */}
-        <div className="p-5 flex items-center gap-3">
-          <Image
-            src={logoImage}
-            alt="warpSpeed"
-            width={32}
-            height={32}
-            className="w-8 h-8 object-contain"
-          />
-          <span className="text-[#1E1E1E] font-semibold text-lg">warpSpeed</span>
+        {/* Header with Logo and Close Button */}
+        <div className="p-5 flex items-center justify-between">
+          {/* Logo and Name - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Image
+              src={logoImage}
+              alt="warpSpeed"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
+            <span className="text-[#1E1E1E] font-semibold text-lg">warpSpeed</span>
+          </div>
+          {/* Close Button - Mobile Only */}
+          <button
+            onClick={onClose}
+            className="lg:hidden p-2 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-lg transition-colors ml-auto"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         {/* Navigation */}
@@ -234,16 +249,26 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             </div>
           )}
 
-          {/* Settings */}
+          {/* Settings / Account Details */}
           <button
-            onClick={() => {/* TODO: Navigate to settings */}}
+            onClick={() => {
+              // On mobile, open Account Details modal and close sidebar
+              // On desktop, navigate to settings (TODO)
+              if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                setIsAccountDetailsModalOpen(true)
+                onClose?.() // Close sidebar when opening modal
+              } else {
+                // TODO: Navigate to settings
+              }
+            }}
             className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="font-medium">Settings</span>
+            <span className="font-medium lg:hidden">Account Details</span>
+            <span className="font-medium hidden lg:inline">Settings</span>
           </button>
 
           {/* Help */}
@@ -263,29 +288,37 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
         {/* Upgrade Card */}
         <div className="p-4 mt-auto">
           <div className="bg-[#FFF8E1] rounded-2xl p-5">
-            {/* Crown Icon in Inverted Pentagon Gem Shape */}
+            {/* Golden Diamond/Crown Icon */}
             <div className="flex justify-center mb-3">
               <div 
-                className="w-12 h-12 bg-[#FFD54F] flex items-center justify-center"
+                className="w-14 h-14 bg-gradient-to-br from-[#FFD54F] via-[#FFC107] to-[#FF8F00] flex items-center justify-center shadow-lg"
                 style={{ clipPath: 'polygon(18% 0%, 82% 0%, 100% 62%, 50% 100%, 0% 62%)' }}
               >
-                <svg className="w-5 h-5 text-[#FF8F00]" viewBox="0 0 24 24" fill="currentColor">
+                <svg className="w-7 h-7 text-[#FF8F00]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
                 </svg>
               </div>
             </div>
-            <h3 className="text-center font-semibold text-[#1E1E1E] mb-1">
+            <h3 className="text-center font-bold text-[#1E1E1E] mb-1 text-base">
               Upgrade Your Plan
             </h3>
-            <p className="text-center text-xs text-[#827F85] mb-4">
-              Enjoy more credits and use even more AI in your day!
+            <p className="text-center text-xs text-[#827F85] mb-4 leading-relaxed">
+              Enjoy more credits and use evenmore AI in your day!
             </p>
-            <button className="w-full py-2.5 bg-white border border-[#EBEBEB] rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors">
+            <button className="w-full py-2.5 bg-[#FFF8E1] border border-[#FFD54F]/30 rounded-full text-sm font-medium text-[#1E1E1E] hover:bg-[#FFECB3] transition-colors">
               Learn More
             </button>
           </div>
         </div>
       </aside>
+
+      {/* Account Details Modal - Mobile Only */}
+      <AccountDetailsModal
+        isOpen={isAccountDetailsModalOpen}
+        onClose={() => {
+          setIsAccountDetailsModalOpen(false)
+        }}
+      />
     </>
   )
 }

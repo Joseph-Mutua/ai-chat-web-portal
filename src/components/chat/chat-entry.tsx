@@ -51,7 +51,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
         {/* Centered Input */}
         <form onSubmit={handleSubmit} className="mt-8">
           <div className="relative flex items-center bg-white border border-[#EBEBEB] rounded-full shadow-sm max-w-xl mx-auto">
-            {/* Attachment Button - Mobile with gradient */}
+            {/* Attachment Button - Mobile with gradient (left side) */}
             <button
               type="button"
               className="lg:hidden flex-shrink-0 rounded-full flex items-center justify-center text-white transition-colors ml-2"
@@ -63,17 +63,6 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               onClick={() => {/* TODO: Handle attachment */}}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-            </button>
-
-            {/* Attachment Button - Desktop without gradient */}
-            <button
-              type="button"
-              className="hidden lg:flex flex-shrink-0 p-3 lg:p-4 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
-              onClick={() => {/* TODO: Handle attachment */}}
-            >
-              <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
               </svg>
             </button>
@@ -92,7 +81,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               'focus:outline-none placeholder:text-[#A0A0A0] text-[#1E1E1E]',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               'max-h-[120px] overflow-y-auto text-sm lg:text-base',
-              'pl-2 lg:pl-0' // Add left padding for attachment button
+              'pl-2 lg:pl-4' // Left padding for mobile attachment button, desktop has no left button
               )}
             />
 
@@ -132,6 +121,17 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                   )}
                 </button>
               )}
+
+              {/* Desktop: Attachment Button (moved to right side, next to microphone) */}
+              <button
+                type="button"
+                className="hidden lg:flex flex-shrink-0 p-2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+                onClick={() => {/* TODO: Handle attachment */}}
+              >
+                <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+              </button>
 
               {/* Desktop: Microphone Button */}
               <button

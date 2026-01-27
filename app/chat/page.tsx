@@ -11,24 +11,17 @@ export default function ChatPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  // Use query parameter as key to force remount when clicking New Chat
+  // This ensures a fresh state when navigating to /chat?new=timestamp
+  const newChatKey = searchParams.get('new')
+
+  // All hooks must be called before any early returns
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login')
     }
   }, [isLoading, isAuthenticated, router])
 
-  if (isLoading) {
-    return <LoadingContainer />
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
-
-  // Use query parameter as key to force remount when clicking New Chat
-  // This ensures a fresh state when navigating to /chat?new=timestamp
-  const newChatKey = searchParams.get('new')
-  
   // Clean up query parameter after component mounts (but don't cause remount)
   useEffect(() => {
     if (newChatKey) {
@@ -38,6 +31,15 @@ export default function ChatPage() {
       }
     }
   }, [newChatKey])
+
+  // Early returns after all hooks
+  if (isLoading) {
+    return <LoadingContainer />
+  }
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   return <ChatLayout key={newChatKey || 'default'} />
 }

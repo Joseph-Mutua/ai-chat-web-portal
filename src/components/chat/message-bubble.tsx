@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils/cn'
 import { MessageBubbleControls } from './message-bubble-controls'
 import type { MessageType } from '@/types'
 import typingGif from '@/assets/animations/typing.gif'
+import logoImage from '@/assets/images/logo.png'
 
 interface MessageBubbleProps {
   message: MessageType
@@ -135,23 +136,35 @@ export function MessageBubble({
                 />
               </div>
             ) : (
-              <div className="prose prose-sm max-w-none">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  className={cn(
-                    'text-sm leading-relaxed',
-                    '[&>p]:mb-2 [&>p]:last:mb-0',
-                    '[&>h1]:text-lg [&>h1]:font-bold',
-                    '[&>h2]:text-base [&>h2]:font-bold',
-                    '[&>ul]:list-disc [&>ul]:ml-4',
-                    '[&>ol]:list-decimal [&>ol]:ml-4',
-                    '[&>code]:px-1.5 [&>code]:py-0.5 [&>code]:bg-white/50 [&>code]:rounded [&>code]:font-mono',
-                    '[&>pre]:p-3 [&>pre]:bg-white/50 [&>pre]:rounded-lg [&>pre]:overflow-x-auto'
-                  )}
-                >
-                  {message.message}
-                </ReactMarkdown>
-              </div>
+              <>
+                {/* Small logo above assistant message - Mobile only */}
+                <div className="lg:hidden mb-2">
+                  <Image
+                    src={logoImage}
+                    alt="warpSpeed"
+                    width={18}
+                    height={18}
+                    className="w-[18px] h-[18px] object-contain"
+                  />
+                </div>
+                <div className="prose prose-sm max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    className={cn(
+                      'text-sm leading-relaxed',
+                      '[&>p]:mb-2 [&>p]:last:mb-0',
+                      '[&>h1]:text-lg [&>h1]:font-bold',
+                      '[&>h2]:text-base [&>h2]:font-bold',
+                      '[&>ul]:list-disc [&>ul]:ml-4',
+                      '[&>ol]:list-decimal [&>ol]:ml-4',
+                      '[&>code]:px-1.5 [&>code]:py-0.5 [&>code]:bg-white/50 [&>code]:rounded [&>code]:font-mono',
+                      '[&>pre]:p-3 [&>pre]:bg-white/50 [&>pre]:rounded-lg [&>pre]:overflow-x-auto'
+                    )}
+                  >
+                    {message.message}
+                  </ReactMarkdown>
+                </div>
+              </>
             )
           ) : (
             <p className="text-sm whitespace-pre-wrap leading-relaxed">
