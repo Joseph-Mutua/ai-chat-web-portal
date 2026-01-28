@@ -13,7 +13,6 @@ import { useSession } from '@/hooks/use-session'
 import { useQueryClient } from '@tanstack/react-query'
 import { ErrorDisplay } from '@/components/ui/error'
 import { getErrorMessage } from '@/lib/utils/errors'
-import { useAppBanner } from '@/hooks/use-app-banner'
 import logoImage from '@/assets/images/logo.png'
 import type { MessageType } from '@/types'
 
@@ -32,8 +31,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
   const [currentConversationId, setCurrentConversationId] = useState<string | undefined>(conversationId)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
-  const [userMessageCount, setUserMessageCount] = useState(0)
-  const sessionStartTime = useRef(Date.now())
   const justCreatedConversationRef = useRef(false)
 
   const {
@@ -46,47 +43,33 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
     limit: 50,
   })
 
-  // Get conversations list to find the title
   const { data: conversationsData } = useChatConversations({
     page: 1,
     limit: 100,
   })
 
-  // Update current conversation ID when prop changes
   useEffect(() => {
     const prevConversationId = currentConversationId
-    
-    // Always sync prop to state
+
     if (conversationId !== currentConversationId) {
       setCurrentConversationId(conversationId)
     }
     
-    // Clear messages and reset state when navigating to new chat (conversationId prop is undefined)
-    // This handles both: navigating from /chat/[id] to /chat, and clicking New Chat while on /chat
     if (!conversationId && prevConversationId) {
-      // New chat - clear everything (we had a conversation ID before, now we don't)
       setMessages([])
       setError(null)
-      setUserMessageCount(0)
-      sessionStartTime.current = Date.now()
     } else if (conversationId && conversationId !== prevConversationId) {
-      // Switching to a different conversation - clear messages (they'll be loaded by the new conversation)
       setMessages([])
       setError(null)
     }
-  }, [conversationId]) // Only depend on prop to avoid loops
+  }, [conversationId]) 
 
-  // Reset when on /chat route with no conversationId prop but we have state (handles New Chat button)
   useEffect(() => {
-    // If we're on /chat route and prop is undefined, ensure state is also reset
-    // But don't reset if we just created a conversation (to avoid clearing messages)
     if (pathname === '/chat' && !conversationId && currentConversationId && !justCreatedConversationRef.current) {
-      // Reset to new chat state
+
       setCurrentConversationId(undefined)
       setMessages([])
       setError(null)
-      setUserMessageCount(0)
-      sessionStartTime.current = Date.now()
     }
   }, [pathname, conversationId, currentConversationId])
 
@@ -96,8 +79,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       const allMessages = conversationData.pages.flatMap((page) => page.messages)
       // Normalize messages to ensure role and conversationId are always set
       const normalizedMessages = allMessages.map((msg) => {
-        // Determine role: prefer direct role, then metadata.role, default to ASSISTANT
-        // Map "model" to "ASSISTANT" as the API returns "model" instead of "ASSISTANT"
         let messageRole = msg.role || msg.metadata?.role || 'ASSISTANT'
         
         // Normalize "model" to "ASSISTANT" (API returns "model" for assistant messages)
@@ -111,11 +92,10 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
         
         return {
           ...msg,
-          // Ensure role is set directly
           role: messageRole as 'USER' | 'ASSISTANT',
-          // Ensure conversationId is always set
+  
           conversationId: msg.conversationId || currentConversationId,
-          // Ensure metadata.role is also set for consistency (normalized)
+         
           metadata: {
             ...msg.metadata,
             role: messageRole as 'USER' | 'ASSISTANT',
@@ -131,7 +111,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
   const handleSendMessage = async (messageText: string) => {
     setError(null)
     
-    // Add user message immediately
     const userMessage: MessageType = {
       id: `temp-user-${Date.now()}`,
       message: messageText,
@@ -145,7 +124,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       },
     }
 
-    // Add pending assistant message with typing animation
     const pendingAssistantMessage: MessageType = {
       id: `temp-pending-${Date.now()}`,
       message: '',
@@ -156,7 +134,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       metadata: { role: 'ASSISTANT' },
     }
 
-    // Add user message and pending assistant message immediately
     setMessages((prev) => [...prev, userMessage, pendingAssistantMessage])
     
     try {
@@ -169,14 +146,11 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       const isNewConversation = !currentConversationId && response.conversationId
       if (isNewConversation) {
         setCurrentConversationId(response.conversationId)
-        // Mark that we just created a conversation to prevent reset
+
         justCreatedConversationRef.current = true
-        // Clear the flag after a short delay
         setTimeout(() => {
           justCreatedConversationRef.current = false
         }, 1000)
-        // Don't update URL here - keep it as /chat to avoid navigation issues
-        // The URL will update naturally if user navigates or refreshes
       }
 
       // Normalize metadata.role from "model" to "ASSISTANT" if needed
@@ -187,7 +161,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
           : (response.metadata?.role || 'ASSISTANT'),
       }
       
-      // Replace pending message with actual assistant response
       const assistantMessage: MessageType = {
         id: response.id,
         message: response.message,
@@ -200,23 +173,18 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
         attachments: response.attachments,
       }
 
-      // Replace pending message with actual message
       setMessages((prev) => {
         const newMessages = [...prev]
         const pendingIndex = newMessages.findIndex(msg => msg.id === pendingAssistantMessage.id)
         if (pendingIndex !== -1) {
           newMessages[pendingIndex] = assistantMessage
         } else {
-          // If pending message not found, just add the assistant message
+    
           newMessages.push(assistantMessage)
         }
         return newMessages
       })
-      
-      // Increment user message count for banner logic
-      setUserMessageCount((prev) => prev + 1)
 
-      // Invalidate and refetch messages query after a delay
       setTimeout(() => {
         queryClient.invalidateQueries({
           queryKey: ['conversation-messages', response.conversationId],
@@ -224,7 +192,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       }, 1500)
     } catch (err) {
       setError(getErrorMessage(err))
-      // Remove user message and pending assistant message on error
+
       setMessages((prev) => {
         return prev.filter(msg => 
           msg.id !== userMessage.id && msg.id !== pendingAssistantMessage.id
@@ -240,15 +208,9 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
     .flatMap((page) => page.data)
     .find((conv) => conv.id === currentConversationId)?.title || undefined
 
-  const { shouldShow: shouldShowBanner, dismissBanner } = useAppBanner({
-    messageCount: userMessageCount,
-    sessionStartTime: sessionStartTime.current,
-  })
-
   const handleOpenReport = (params: { conversationId: string; messageId: string }) => {
     // TODO: Implement report modal for web
     console.log('Open report modal:', params)
-    // For now, we can show an alert or implement a web report modal
     if (typeof window !== 'undefined') {
       alert(`Report message: ${params.messageId}\nThis feature will be implemented with a proper modal.`)
     }
@@ -263,9 +225,9 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
       />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#F4F5FA]">
+      <div className="flex-1 flex flex-col min-w-0 bg-background-light lg:bg-background">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 bg-[#F4F5FA]">
+        <header className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 bg-background-light lg:bg-background">
           {/* Mobile: Logo and menu */}
           <div className="flex items-center gap-3 lg:hidden">
             <Image
@@ -275,11 +237,11 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
               height={28}
               className="w-7 h-7 object-contain"
             />
-            <span className="text-[#1E1E1E] font-semibold text-base">warpSpeed</span>
+            <span className="text-text font-semibold text-base">warpSpeed</span>
           </div>
 
           {/* Desktop: AI Chat title */}
-          <h1 className="hidden lg:block text-xl font-semibold text-[#1E1E1E]">
+          <h1 className="hidden lg:block text-3xl font-semibold text-text">
             AI Chat
           </h1>
 
@@ -287,7 +249,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
           <div className="flex items-center gap-3">
             {/* Mobile hamburger menu */}
             <button 
-              className="lg:hidden p-2 text-[#1E1E1E]"
+              className="lg:hidden p-2 text-text"
               onClick={() => setIsSidebarOpen(true)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,8 +271,8 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
                   className="w-10 h-10 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#E8F5F5] flex items-center justify-center">
-                  <span className="text-[#1A7A7A] font-medium">
+                <div className="w-10 h-10 rounded-full bg-avatar-bg flex items-center justify-center">
+                  <span className="text-primary-dark font-medium">
                     {user?.firstName?.charAt(0) || 'U'}
                   </span>
                 </div>
@@ -319,42 +281,11 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
           </div>
         </header>
 
-        {/* Mobile App Banner */}
-        {shouldShowBanner && (
-          <div className="lg:hidden px-4 py-3 bg-white">
-            <div 
-              className="flex items-center justify-between rounded-2xl px-4 py-4 border border-[#CEB8F2]"
-              style={{ background: 'linear-gradient(102deg, #EDE2FF 0%, #E9F7F6 100%)' }}
-            >
-              <p className="text-sm text-[#1E1E1E] font-medium">
-                Unlock the full power of warpSpeed.
-              </p>
-              <div className="flex items-center gap-2">
-                <button 
-                  type="button"
-                  onClick={dismissBanner}
-                  className="p-1 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                <button 
-                  type="button"
-                  className="px-4 py-2 bg-[#1A7A7A] text-white text-sm font-medium rounded-full whitespace-nowrap hover:bg-[#156666] transition-colors"
-                >
-                  Get the App
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Messages Area */}
-        <div className="flex-1 overflow-hidden flex flex-col bg-[#F4F5FA]">
+        <div className="flex-1 overflow-hidden flex flex-col bg-background-light lg:bg-background">
           {isLoadingMessages ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-[#827F85]">Loading conversation...</div>
+              <div className="text-grey">Loading conversation...</div>
             </div>
           ) : error ? (
             <ErrorDisplay
@@ -365,11 +296,50 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
               }}
             />
           ) : !hasMessages ? (
-            // Welcome screen with centered input
-            <ChatEntry 
-              onSendMessage={handleSendMessage} 
-              isLoading={sendMessage.isPending}
-            />
+            // Welcome screen with centered input and banner
+            <>
+              {/* Mobile App Banner */}
+              <div className="lg:hidden px-4 py-3">
+                <div className="flex items-center justify-between rounded-2xl px-4 py-4 border border-secondary-medium bg-gradient-to-r from-secondary-light to-primary-light">
+                  <p className="text-sm text-text font-medium">
+                    Unlock the full power of warpSpeed.
+                  </p>
+                  <button 
+                    type="button"
+                    className="px-4 py-2 bg-primary-dark text-white text-sm font-medium rounded-full whitespace-nowrap hover:bg-primary-darker transition-colors"
+                  >
+                    Get the App
+                  </button>
+                </div>
+              </div>
+
+              <ChatEntry 
+                onSendMessage={handleSendMessage} 
+                isLoading={sendMessage.isPending}
+              />
+
+              {/* Desktop App Banner */}
+              <div className="hidden lg:block px-6 py-4">
+                <div className="max-w-4xl mx-auto">
+                  <div className="flex items-center justify-between rounded-3xl px-8 py-5 border border-secondary-medium bg-gradient-to-r from-secondary-light to-primary-light">
+                    <div>
+                      <h3 className="text-text font-semibold text-lg mb-1">
+                        Unlock Exclusive Features in the App
+                      </h3>
+                      <p className="text-sm text-grey">
+                        Access offline chat, private notes, and personalized insights — only in our mobile app.
+                      </p>
+                    </div>
+                    <button 
+                      type="button"
+                      className="flex-shrink-0 px-8 py-3 bg-primary-dark text-white text-sm font-medium rounded-full hover:bg-primary-darker transition-colors"
+                    >
+                      Get The App
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
           ) : (
             // Conversation view with messages and bottom input
             <>
@@ -386,42 +356,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
             </>
           )}
         </div>
-
-        {/* Desktop App Banner - Shown based on engagement */}
-        {shouldShowBanner && (
-          <div className="hidden lg:block px-6 py-4 bg-white">
-            <div className="max-w-4xl mx-auto">
-              <div 
-                className="flex items-center justify-between rounded-3xl px-8 py-5 border border-[#CEB8F2] relative"
-                style={{ background: 'linear-gradient(98deg, #EDE2FF 0%, #E9F7F6 100%)' }}
-              >
-                <button
-                  type="button"
-                  onClick={dismissBanner}
-                  className="absolute top-4 right-4 p-1 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                <div className="pr-12">
-                  <h3 className="text-[#1E1E1E] font-semibold text-lg mb-1">
-                    Unlock Exclusive Features in the App
-                  </h3>
-                  <p className="text-sm text-[#827F85]">
-                    Access offline chat, private notes, and personalized insights — only in our mobile app.
-                  </p>
-                </div>
-                <button 
-                  type="button"
-                  className="flex-shrink-0 px-8 py-3 bg-[#1A7A7A] text-white text-sm font-medium rounded-full hover:bg-[#156666] transition-colors"
-                >
-                  Get The App
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Profile Modal */}

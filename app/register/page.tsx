@@ -38,9 +38,9 @@ export default function RegisterPage() {
             height={28}
             className="w-7 h-7 object-contain"
           />
-          <span className="text-[#1E1E1E] font-semibold text-base">warpSpeed</span>
+          <span className="text-text font-semibold text-base">warpSpeed</span>
         </div>
-        <button className="p-2 text-[#1E1E1E]">
+        <button className="p-2 text-text">
           <svg
             className="w-6 h-6"
             fill="none"

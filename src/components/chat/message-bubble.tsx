@@ -117,8 +117,8 @@ export function MessageBubble({
           className={cn(
             'rounded-2xl px-4 py-3',
             isUser
-              ? 'bg-white text-[#1E1E1E] max-w-[90%] sm:max-w-[380px]'
-              : 'text-[#1E1E1E] max-w-[95%] sm:max-w-[837px]'
+              ? 'bg-grey-light lg:bg-background-light text-text max-w-[90%] sm:max-w-sm md:max-w-md'
+              : 'text-text max-w-[95%] sm:max-w-2xl lg:max-w-4xl'
           )}
         >
           {/* Message Content */}
@@ -174,7 +174,7 @@ export function MessageBubble({
 
           {/* Citations */}
           {message.citations?.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-[#EBEBEB]">
+            <div className="mt-3 pt-3 border-t border-border">
               <div className="text-xs font-medium mb-2">Sources:</div>
               <div className="space-y-1">
                 {message.citations.map((citation, idx) => (
@@ -183,7 +183,7 @@ export function MessageBubble({
                     href={citation.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-[#1A7A7A] hover:underline block truncate"
+                    className="text-xs text-primary-dark hover:underline block truncate"
                   >
                     {citation.title || citation.source || citation.url}
                   </a>

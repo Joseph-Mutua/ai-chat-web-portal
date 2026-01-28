@@ -12,10 +12,10 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
   const [message, setMessage] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Keep textarea at single line height for the entry input
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
     }
   }, [message])
 
@@ -24,9 +24,6 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
     if (message.trim() && !isLoading) {
       onSendMessage(message.trim())
       setMessage('')
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto'
-      }
     }
   }
 
@@ -41,28 +38,23 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
     <div className="flex-1 flex flex-col items-center justify-center p-8">
       <div className="max-w-2xl w-full text-center space-y-6">
         {/* Welcome text */}
-        <h1 className="text-3xl lg:text-4xl font-semibold text-[#1E1E1E]">
+        <h1 className="text-3xl lg:text-5xl text-text">
           Hello there !
         </h1>
-        <p className="text-[#827F85] text-base lg:text-lg">
+        <p className="text-base lg:text-2xl font-normal text-text">
           I&apos;m your AI chat assistant. Ask me anything to begin!
         </p>
 
         {/* Centered Input */}
         <form onSubmit={handleSubmit} className="mt-8">
-          <div className="relative flex items-center bg-white border border-[#EBEBEB] rounded-full shadow-sm max-w-xl mx-auto">
-            {/* Attachment Button - Mobile with gradient (left side) */}
+          <div className="relative flex items-center bg-background-light mx-auto w-full max-w-sm h-11 lg:max-w-2xl lg:h-12 shadow-input border border-border-input rounded-full lg:rounded-xl">
+            {/* Attachment Button - Mobile (outlined) */}
             <button
               type="button"
-              className="lg:hidden flex-shrink-0 rounded-full flex items-center justify-center text-white transition-colors ml-2"
-              style={{ 
-                width: '26px', 
-                height: '26px',
-                background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)'
-              }}
+              className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ml-2 border border-secondary bg-transparent"
               onClick={() => {/* TODO: Handle attachment */}}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <svg className="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
               </svg>
             </button>
@@ -77,11 +69,11 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               disabled={isLoading}
               rows={1}
               className={cn(
-              'flex-1 py-3 lg:py-4 bg-transparent resize-none',
-              'focus:outline-none placeholder:text-[#A0A0A0] text-[#1E1E1E]',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-              'max-h-[120px] overflow-y-auto text-sm lg:text-base',
-              'pl-2 lg:pl-4' // Left padding for mobile attachment button, desktop has no left button
+                'flex-1 py-3 lg:py-3.5 bg-transparent resize-none',
+                'focus:outline-none placeholder:text-text-placeholder text-text',
+                'disabled:opacity-50 disabled:cursor-not-allowed',
+                'max-h-11 lg:max-h-12 overflow-hidden text-sm lg:text-base',
+                'pl-2 lg:pl-5'
               )}
             />
 
@@ -91,8 +83,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               {!message.trim() && (
                 <button
                   type="button"
-                  className="lg:hidden flex-shrink-0 w-[25px] h-[25px] rounded-full flex items-center justify-center text-white transition-colors"
-                  style={{ background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)' }}
+                  className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors bg-gradient-to-tr from-primary to-secondary"
                   onClick={() => {/* TODO: Handle voice input */}}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -106,8 +97,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="lg:hidden flex-shrink-0 w-[25px] h-[25px] rounded-full flex items-center justify-center text-white transition-colors"
-                  style={{ background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)' }}
+                  className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors bg-gradient-to-tr from-primary to-secondary"
                 >
                   {isLoading ? (
                     <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -125,7 +115,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               {/* Desktop: Attachment Button (moved to right side, next to microphone) */}
               <button
                 type="button"
-                className="hidden lg:flex flex-shrink-0 p-2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+                className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
                 onClick={() => {/* TODO: Handle attachment */}}
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -136,7 +126,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
               {/* Desktop: Microphone Button */}
               <button
                 type="button"
-                className="hidden lg:flex flex-shrink-0 p-2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+                className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
                 onClick={() => {/* TODO: Handle voice input */}}
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -151,8 +141,8 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 className={cn(
                   "hidden lg:flex flex-shrink-0 w-10 h-10 lg:w-11 lg:h-11 rounded-full items-center justify-center transition-colors",
                   message.trim() && !isLoading
-                    ? "bg-[#1A7A7A] text-white hover:bg-[#156666]"
-                    : "bg-[#1A7A7A] text-white opacity-70"
+                    ? "bg-primary-dark text-white hover:bg-primary-darker"
+                    : "bg-primary-dark text-white opacity-70"
                 )}
               >
                 {isLoading ? (

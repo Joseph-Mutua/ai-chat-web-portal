@@ -50,20 +50,15 @@ export function ChatInput({
         "max-w-3xl mx-auto",
         isMobile ? "px-0" : "px-4"
       )}>
-        <div className="relative flex items-center bg-white border border-[#EBEBEB] rounded-full shadow-sm">
-          {/* Attachment Button - Mobile with gradient (left side) */}
+        <div className="relative flex items-center bg-background-light border border-border-input rounded-full lg:rounded-xl shadow-input">
+          {/* Attachment Button - Mobile (outlined) */}
           <button
             type="button"
-            className="lg:hidden flex-shrink-0 rounded-full flex items-center justify-center text-white transition-colors ml-2"
-            style={{ 
-              width: '26px', 
-              height: '26px',
-              background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)'
-            }}
+            className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ml-2 border border-secondary bg-transparent"
             onClick={() => {/* TODO: Handle attachment */}}
           >
             <svg 
-              className="w-4 h-4" 
+              className="w-4 h-4 text-secondary" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24" 
@@ -84,21 +79,20 @@ export function ChatInput({
             rows={1}
             className={cn(
               'flex-1 py-3 lg:py-4 bg-transparent resize-none',
-              'focus:outline-none placeholder:text-[#A0A0A0] text-[#1E1E1E]',
+              'focus:outline-none placeholder:text-text-placeholder text-text',
               'disabled:opacity-50 disabled:cursor-not-allowed',
-              'max-h-[120px] overflow-y-auto text-sm lg:text-base',
-              'pl-2 lg:pl-4' // Left padding for mobile attachment button, desktop has no left button
+              'max-h-input overflow-y-auto text-sm lg:text-base',
+              'pl-2 lg:pl-4'
             )}
           />
 
           {/* Right side buttons */}
           <div className="flex items-center gap-1 pr-2 lg:pr-3">
-            {/* Mobile: Microphone Button (only when message is empty) */}
+            {/* Mobile: Microphone Button*/}
             {!message.trim() && (
               <button
                 type="button"
-                className="lg:hidden flex-shrink-0 w-[25px] h-[25px] rounded-full flex items-center justify-center text-white transition-colors"
-                style={{ background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)' }}
+                className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors bg-gradient-to-tr from-primary to-secondary"
                 onClick={() => {/* TODO: Handle voice input */}}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -107,13 +101,12 @@ export function ChatInput({
               </button>
             )}
 
-            {/* Mobile: Send Button (only when message has text) */}
+            {/* Mobile: Send Button*/}
             {message.trim() && (
               <button
                 type="submit"
                 disabled={isLoading}
-                className="lg:hidden flex-shrink-0 w-[25px] h-[25px] rounded-full flex items-center justify-center text-white transition-colors"
-                style={{ background: 'linear-gradient(309deg, #006C67 0%, #531CB3 100%)' }}
+                className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors bg-gradient-to-tr from-primary to-secondary"
               >
                 {isLoading ? (
                   <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -128,10 +121,10 @@ export function ChatInput({
               </button>
             )}
 
-            {/* Desktop: Attachment Button (moved to right side, next to microphone) */}
+            {/* Desktop: Attachment Button*/}
             <button
               type="button"
-              className="hidden lg:flex flex-shrink-0 p-2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+              className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
               onClick={() => {/* TODO: Handle attachment */}}
             >
               <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -142,7 +135,7 @@ export function ChatInput({
             {/* Desktop: Microphone Button */}
             <button
               type="button"
-              className="hidden lg:flex flex-shrink-0 p-2 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+              className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
               onClick={() => {/* TODO: Handle voice input */}}
             >
               <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -157,8 +150,8 @@ export function ChatInput({
               className={cn(
                 "hidden lg:flex flex-shrink-0 w-10 h-10 lg:w-11 lg:h-11 rounded-full items-center justify-center transition-colors",
                 message.trim() && !isLoading
-                  ? "bg-[#1A7A7A] text-white hover:bg-[#156666]"
-                  : "bg-[#1A7A7A] text-white opacity-70"
+                  ? "bg-primary-dark text-white hover:bg-primary-darker"
+                  : "bg-primary-dark text-white opacity-70"
               )}
             >
               {isLoading ? (

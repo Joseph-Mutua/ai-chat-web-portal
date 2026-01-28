@@ -39,9 +39,9 @@ export default function LoginPage() {
             height={28}
             className="w-7 h-7 object-contain"
           />
-          <span className="text-[#1E1E1E] font-semibold text-base">warpSpeed</span>
+          <span className="text-text font-semibold text-base">warpSpeed</span>
         </div>
-        <button className="p-2 text-[#1E1E1E]">
+        <button className="p-2 text-text">
           <svg
             className="w-6 h-6"
             fill="none"
@@ -58,7 +58,7 @@ export default function LoginPage() {
         </button>
       </div>
 
-      {/* Desktop Layout - Only shows at lg (1024px) and above */}
+      {/* Desktop Layout */}
       <div className="hidden lg:block lg:relative lg:w-full lg:min-h-screen lg:bg-white">
         {/* Left Panel - AI Chat Preview */}
         <LoginPreviewPanel />

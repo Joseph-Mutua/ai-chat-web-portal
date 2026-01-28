@@ -126,7 +126,7 @@ export function MessageBubbleControls({
         <button
           type="button"
           onClick={() => setShowCopyMenu(!showCopyMenu)}
-          className="p-1.5 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+          className="p-1.5 text-grey hover:text-text transition-colors"
           aria-label="Copy"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -135,11 +135,11 @@ export function MessageBubbleControls({
         </button>
 
         {showCopyMenu && (
-          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border border-[#EBEBEB] py-2 min-w-[180px] z-50">
+          <div className="absolute bottom-full left-0 mb-2 bg-background-light rounded-lg shadow-lg border border-border py-2 min-w-[180px] z-50">
             <button
               type="button"
               onClick={handleCopyMessage}
-              className="w-full px-4 py-2 text-left text-sm text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -149,7 +149,7 @@ export function MessageBubbleControls({
             <button
               type="button"
               onClick={handleCopyConversation}
-              className="w-full px-4 py-2 text-left text-sm text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -165,7 +165,7 @@ export function MessageBubbleControls({
         <button
           type="button"
           onClick={() => setShowDownloadMenu(!showDownloadMenu)}
-          className="p-1.5 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+          className="p-1.5 text-grey hover:text-text transition-colors"
           aria-label="Download"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -174,11 +174,11 @@ export function MessageBubbleControls({
         </button>
 
         {showDownloadMenu && (
-          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border border-[#EBEBEB] py-2 min-w-[180px] z-50">
+          <div className="absolute bottom-full left-0 mb-2 bg-background-light rounded-lg shadow-lg border border-border py-2 min-w-[180px] z-50">
             <button
               type="button"
               onClick={handleExportAnswer}
-              className="w-full px-4 py-2 text-left text-sm text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -188,7 +188,7 @@ export function MessageBubbleControls({
             <button
               type="button"
               onClick={handleExportFullChat}
-              className="w-full px-4 py-2 text-left text-sm text-[#1E1E1E] hover:bg-[#F4F5FA] transition-colors flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -203,7 +203,7 @@ export function MessageBubbleControls({
       <button
         type="button"
         onClick={handleVoiceToggle}
-        className="p-1.5 text-[#827F85] hover:text-[#1E1E1E] transition-colors"
+        className="p-1.5 text-grey hover:text-text transition-colors"
         aria-label={isSpeaking ? 'Stop speaking' : 'Play audio'}
       >
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -222,7 +222,7 @@ export function MessageBubbleControls({
           onClick={handleThumbsUp}
           className={cn(
             'p-1.5 transition-colors',
-            isThumbed('thumbsUp') ? 'text-[#1A7A7A]' : 'text-[#827F85] hover:text-[#1E1E1E]'
+            isThumbed('thumbsUp') ? 'text-primary-dark' : 'text-grey hover:text-text'
           )}
           aria-label="Like"
         >
@@ -239,7 +239,7 @@ export function MessageBubbleControls({
           onClick={handleThumbsDown}
           className={cn(
             'p-1.5 transition-colors',
-            isThumbed('thumbsDown') ? 'text-[#E74C3C]' : 'text-[#827F85] hover:text-[#1E1E1E]'
+            isThumbed('thumbsDown') ? 'text-error-red' : 'text-grey hover:text-text'
           )}
           aria-label="Dislike"
         >

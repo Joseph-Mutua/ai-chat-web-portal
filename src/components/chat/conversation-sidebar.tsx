@@ -26,7 +26,6 @@ function generateConversationTitle(message: string | undefined | null): string {
     .replace(/\n+/g, ' ') // Replace newlines with spaces
     .trim()
   
-  // Truncate to 50 characters
   if (cleanMessage.length > 50) {
     cleanMessage = cleanMessage.substring(0, 50).trim() + '...'
   }
@@ -157,7 +156,8 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
           </button>
         </div>
 
-  
+        <div className="hidden lg:block mx-2 border-b-2 border-background" />
+
         <nav className="px-4 flex-1">
         
           <button
@@ -167,7 +167,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            <span className="font-medium">New Chat</span>
+            <span className="text-black text-base font-normal leading-[14px] tracking-normal">New Chat</span>
           </button>
 
           {/* Chat History */}
@@ -182,7 +182,7 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            <span className="font-medium">Chat History</span>
+            <span className="text-black text-base font-normal leading-[14px] tracking-normal">Chat History</span>
             <svg 
               className={cn("w-4 h-4 ml-auto transition-transform", showHistory && "rotate-180")} 
               fill="none" 
@@ -253,51 +253,96 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                 // TODO: Navigate to settings
               }
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-text hover:bg-background rounded-xl transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            {/* Person icon with circle for mobile (Account Details) */}
+            <svg className="w-5 h-5 lg:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <circle cx="12" cy="12" r="10" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 9a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 19c0-3.314 2.686-6 6-6s6 2.686 6 6" />
+            </svg>
+            {/* Gear icon for desktop (Settings) */}
+            <svg className="w-5 h-5 hidden lg:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="font-medium lg:hidden">Account Details</span>
-            <span className="font-medium hidden lg:inline">Settings</span>
+            <span className="text-black text-base font-normal leading-[14px] tracking-normal lg:hidden">Account Details</span>
+            <span className="text-black text-base font-normal leading-[14px] tracking-normal hidden lg:inline">Settings</span>
           </button>
 
           {/* Help */}
           <button
             onClick={() => {/* TODO: Navigate to help */}}
-            className="w-full flex items-center gap-3 px-4 py-3 text-[#1E1E1E] hover:bg-[#F4F5FA] rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-text hover:bg-background rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <circle cx="12" cy="12" r="10" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
               <circle cx="12" cy="17" r="0.5" fill="currentColor" />
             </svg>
-            <span className="font-medium">Help</span>
+            <span className="text-black text-base font-normal leading-[14px] tracking-normal">Help</span>
           </button>
         </nav>
 
 
         <div className="p-4 mt-auto">
-          <div className="bg-[#FFF8E1] rounded-2xl p-5">
+          <div className="bg-gold-upgrade-bg rounded-2xl p-5">
       
             <div className="flex justify-center mb-3">
-              <div 
-                className="w-14 h-14 bg-gradient-to-br from-[#FFD54F] via-[#FFC107] to-[#FF8F00] flex items-center justify-center shadow-lg"
-                style={{ clipPath: 'polygon(18% 0%, 82% 0%, 100% 62%, 50% 100%, 0% 62%)' }}
-              >
-                <svg className="w-7 h-7 text-[#FF8F00]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+            
+              <div className="relative">
+                <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="gemGradient" x1="28" y1="4" x2="28" y2="52" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#FFE082" />
+                      <stop offset="15%" stopColor="#FFD54F" />
+                      <stop offset="40%" stopColor="#FFC107" />
+                      <stop offset="70%" stopColor="#FFB300" />
+                      <stop offset="100%" stopColor="#FFA000" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* 5-sided gem shape*/}
+                  <path 
+                    d="M10 6H46L52 26L28 52L4 26L10 6Z" 
+                    fill="url(#gemGradient)"
+                  />
+                  
+                  {/* Top facet highlight */}
+                  <path 
+                    d="M10 6H46L52 26H4L10 6Z" 
+                    fill="rgba(255,255,255,0.12)"
+                  />
+                  
+                  {/* Subtle horizontal facet bands */}
+                  <path d="M8 22H48" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
+                  <path d="M14 32H42" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                  <path d="M20 40H36" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                  
+                  {/* Left facet subtle shadow */}
+                  <path 
+                    d="M10 6L4 26L28 52V6H10Z" 
+                    fill="rgba(0,0,0,0.04)"
+                  />
+                  
+                  {/* Crown icon*/}
+                  <g transform="translate(16, 14)">
+                    <path 
+                      d="M4 14L2 5L7 9L12 4L17 9L22 5L20 14H4Z" 
+                      fill="white"
+                    />
+                    <rect x="4" y="15" width="16" height="3" rx="1" fill="white" />
+                  </g>
                 </svg>
               </div>
             </div>
-            <h3 className="text-center font-bold text-text mb-1 text-base">
+            <h3 className="text-center font-semibold text-xl mb-1 text-base">
               Upgrade Your Plan
             </h3>
-            <p className="text-center text-xs text-grey mb-4 leading-relaxed">
-              Enjoy more credits and use evenmore AI in your day!
+            <p className="text-center text-text text-sm text-grey mb-4 leading-relaxed">
+              Enjoy more credits and use <br/> even more AI in your day!
             </p>
-            <button className="w-full py-2.5 bg-background-light border border-border rounded-full text-sm font-medium text-text hover:bg-background transition-colors">
+            <button className="w-full py-2.5 bg-background-light rounded-full text-sm font-medium text-text hover:bg-background transition-colors">
               Learn More
             </button>
           </div>

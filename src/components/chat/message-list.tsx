@@ -100,7 +100,7 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     >
       <div className="flex flex-col w-full space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-[#827F85] py-12">
+          <div className="text-center text-grey py-12">
             No messages yet. Start the conversation!
           </div>
         ) : (
