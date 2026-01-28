@@ -218,7 +218,6 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar - handles both desktop (always visible) and mobile (toggle) */}
       <ConversationSidebar 
         isOpen={isSidebarOpen} 
         onClose={() => setIsSidebarOpen(false)} 
@@ -226,9 +225,9 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-background-light lg:bg-background">
-        {/* Header */}
+      
         <header className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 bg-background-light lg:bg-background">
-          {/* Mobile: Logo and menu */}
+      
           <div className="flex items-center gap-3 lg:hidden">
             <Image
               src={logoImage}
@@ -240,14 +239,13 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
             <span className="text-text font-semibold text-base">warpSpeed</span>
           </div>
 
-          {/* Desktop: AI Chat title */}
+  
           <h1 className="hidden lg:block text-3xl font-semibold text-text">
             AI Chat
           </h1>
 
-          {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Mobile hamburger menu */}
+     
             <button 
               className="lg:hidden p-2 text-text"
               onClick={() => setIsSidebarOpen(true)}
@@ -257,7 +255,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
               </svg>
             </button>
 
-            {/* Desktop: User avatar */}
+      
             <button
               className="hidden lg:flex items-center cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setIsProfileModalOpen(true)}
@@ -296,7 +294,7 @@ export function ChatLayout({ conversationId }: ChatLayoutProps) {
               }}
             />
           ) : !hasMessages ? (
-            // Welcome screen with centered input and banner
+            
             <>
               {/* Mobile App Banner */}
               <div className="lg:hidden px-4 py-3">

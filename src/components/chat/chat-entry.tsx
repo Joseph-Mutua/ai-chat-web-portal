@@ -12,7 +12,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
   const [message, setMessage] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Keep textarea at single line height for the entry input
+  
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
@@ -37,7 +37,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8">
       <div className="max-w-2xl w-full text-center space-y-6">
-        {/* Welcome text */}
+      
         <h1 className="text-3xl lg:text-5xl text-text">
           Hello there !
         </h1>
@@ -45,10 +45,10 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
           I&apos;m your AI chat assistant. Ask me anything to begin!
         </p>
 
-        {/* Centered Input */}
+     
         <form onSubmit={handleSubmit} className="mt-8">
           <div className="relative flex items-center bg-background-light mx-auto w-full max-w-sm h-11 lg:max-w-2xl lg:h-12 shadow-input border border-border-input rounded-full lg:rounded-xl">
-            {/* Attachment Button - Mobile (outlined) */}
+       
             <button
               type="button"
               className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ml-2 border border-secondary bg-transparent"
@@ -79,7 +79,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
 
             {/* Right side buttons */}
             <div className="flex items-center gap-1 pr-2 lg:pr-3">
-              {/* Mobile: Microphone Button (only when message is empty) */}
+       
               {!message.trim() && (
                 <button
                   type="button"
@@ -92,7 +92,6 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 </button>
               )}
 
-              {/* Mobile: Send Button (only when message has text) */}
               {message.trim() && (
                 <button
                   type="submit"
@@ -112,7 +111,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 </button>
               )}
 
-              {/* Desktop: Attachment Button (moved to right side, next to microphone) */}
+           
               <button
                 type="button"
                 className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
@@ -123,7 +122,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 </svg>
               </button>
 
-              {/* Desktop: Microphone Button */}
+     
               <button
                 type="button"
                 className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
@@ -134,7 +133,7 @@ export function ChatEntry({ onSendMessage, isLoading = false }: ChatEntryProps) 
                 </svg>
               </button>
 
-              {/* Desktop: Send Button */}
+        
               <button
                 type="submit"
                 disabled={!message.trim() || isLoading}

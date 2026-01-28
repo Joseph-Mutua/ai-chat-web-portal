@@ -255,13 +255,13 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
             }}
             className="w-full flex items-center gap-3 px-4 py-3 text-text hover:bg-background rounded-xl transition-colors"
           >
-            {/* Person icon with circle for mobile (Account Details) */}
+  
             <svg className="w-5 h-5 lg:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <circle cx="12" cy="12" r="10" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 9a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 19c0-3.314 2.686-6 6-6s6 2.686 6 6" />
             </svg>
-            {/* Gear icon for desktop (Settings) */}
+         
             <svg className="w-5 h-5 hidden lg:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -302,30 +302,27 @@ export function ConversationSidebar({ isOpen = true, onClose }: ConversationSide
                     </linearGradient>
                   </defs>
                   
-                  {/* 5-sided gem shape*/}
+              
                   <path 
                     d="M10 6H46L52 26L28 52L4 26L10 6Z" 
                     fill="url(#gemGradient)"
                   />
                   
-                  {/* Top facet highlight */}
+                
                   <path 
                     d="M10 6H46L52 26H4L10 6Z" 
                     fill="rgba(255,255,255,0.12)"
                   />
                   
-                  {/* Subtle horizontal facet bands */}
                   <path d="M8 22H48" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
                   <path d="M14 32H42" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
                   <path d="M20 40H36" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
                   
-                  {/* Left facet subtle shadow */}
                   <path 
                     d="M10 6L4 26L28 52V6H10Z" 
                     fill="rgba(0,0,0,0.04)"
                   />
                   
-                  {/* Crown icon*/}
                   <g transform="translate(16, 14)">
                     <path 
                       d="M4 14L2 5L7 9L12 4L17 9L22 5L20 14H4Z" 

@@ -78,16 +78,16 @@ export function AccountDetailsModal({ isOpen, onClose }: AccountDetailsModalProp
         ref={modalRef}
         className={cn(
           'fixed bottom-0 left-0 right-0 z-50 bg-white',
-          'lg:hidden', // Only show on mobile
-          'rounded-t-[24px]', // Rounded top corners (24px)
-          'max-h-[70vh]', // Limit height to ~70% of viewport
+          'lg:hidden', 
+          'rounded-t-[24px]', 
+          'max-h-[70vh]', 
           'flex flex-col',
           'shadow-lg',
           'transition-transform duration-300 ease-out',
           isOpen ? 'translate-y-0' : 'translate-y-full'
         )}
       >
-        {/* Close Button - Top Right */}
+      
         <div className="flex justify-end pt-4 pr-4 pb-2">
           <button
             type="button"
@@ -100,9 +100,9 @@ export function AccountDetailsModal({ isOpen, onClose }: AccountDetailsModalProp
           </button>
         </div>
 
-        {/* Scrollable Content */}
+     
         <div className="flex-1 overflow-y-auto px-4 pb-6">
-          {/* Profile Header */}
+  
           <div className="flex items-center gap-4 mb-8">
             <div className="relative flex-shrink-0">
               {user?.profileImage?.url || user?.profileImageUrl ? (

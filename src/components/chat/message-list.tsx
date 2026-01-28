@@ -52,11 +52,7 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
       lastMessageIdRef.current = lastMessageId
     }
 
-    // Only auto-scroll if:
-    // 1. There are actually new messages (different last message ID)
-    // 2. User is near the bottom (shouldAutoScroll is true)
-    // 3. We're not currently programmatically scrolling
-    // 4. Container exists and is ready
+ //Autoscroll behaviour
     if (
       hasNewMessages && 
       shouldAutoScroll && 

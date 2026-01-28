@@ -51,7 +51,7 @@ export function ChatInput({
         isMobile ? "px-0" : "px-4"
       )}>
         <div className="relative flex items-center bg-background-light border border-border-input rounded-full lg:rounded-xl shadow-input">
-          {/* Attachment Button - Mobile (outlined) */}
+  
           <button
             type="button"
             className="lg:hidden flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ml-2 border border-secondary bg-transparent"
@@ -86,9 +86,8 @@ export function ChatInput({
             )}
           />
 
-          {/* Right side buttons */}
           <div className="flex items-center gap-1 pr-2 lg:pr-3">
-            {/* Mobile: Microphone Button*/}
+     
             {!message.trim() && (
               <button
                 type="button"
@@ -101,7 +100,7 @@ export function ChatInput({
               </button>
             )}
 
-            {/* Mobile: Send Button*/}
+  
             {message.trim() && (
               <button
                 type="submit"
@@ -121,7 +120,7 @@ export function ChatInput({
               </button>
             )}
 
-            {/* Desktop: Attachment Button*/}
+    
             <button
               type="button"
               className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
@@ -132,7 +131,7 @@ export function ChatInput({
               </svg>
             </button>
 
-            {/* Desktop: Microphone Button */}
+         
             <button
               type="button"
               className="hidden lg:flex flex-shrink-0 p-2 text-grey hover:text-text transition-colors"
@@ -143,7 +142,6 @@ export function ChatInput({
               </svg>
             </button>
 
-            {/* Desktop: Send Button */}
             <button
               type="submit"
               disabled={!message.trim() || isLoading}
