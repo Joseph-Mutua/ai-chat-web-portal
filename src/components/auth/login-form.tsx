@@ -37,7 +37,7 @@ export function LoginForm({ isMobile = false }: LoginFormProps) {
   }
 
   return (
-    <div className="w-full flex items-center justify-center px-6 py-8 lg:p-12 bg-white min-h-[calc(100vh-56px)] lg:min-h-screen">
+    <div className="w-full flex items-center justify-center px-6 py-8 lg:p-12 bg-background-light min-h-[calc(100vh-56px)] lg:min-h-screen">
       <div className="w-full max-w-sm space-y-5">
         {/* Logo */}
         <div className="flex justify-center mb-4">

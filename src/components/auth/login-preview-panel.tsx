@@ -28,7 +28,7 @@ export function LoginPreviewPanel() {
             </h1>
             
         
-            <p className="text-[0.875em] text-text/70 mb-4 text-center leading-relaxed break-words overflow-hidden">
+            <p className="text-[0.875em] text-text mb-4 text-center leading-relaxed break-words overflow-hidden">
               warpSpeed is the most personal AI partner,
               <br />
               designed to improve your productivity

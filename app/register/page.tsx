@@ -1,6 +1,6 @@
 'use client'
 
-import { RegisterFormNew } from '@/components/auth/register-form-new'
+import { RegisterForm } from '@/components/auth/register-form'
 import { LoginPreviewPanel } from '@/components/auth/login-preview-panel'
 import { useSession } from '@/hooks/use-session'
 import { useEffect } from 'react'
@@ -63,13 +63,13 @@ export default function RegisterPage() {
         <LoginPreviewPanel />
 
         <div className="absolute top-0 left-[50%] right-0 h-full bg-white flex items-center justify-center">
-          <RegisterFormNew />
+          <RegisterForm />
         </div>
       </div>
 
 
       <div className="lg:hidden flex-1 w-full bg-white">
-        <RegisterFormNew />
+        <RegisterForm />
       </div>
     </div>
   )
