@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { QueryProvider } from '@/providers/query-provider'
 import { SessionProvider } from '@/providers/session-provider'
+import { ErrorBoundaryProvider } from '@/providers/error-boundary-provider'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -16,11 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryProvider>
-          <SessionProvider>
-            {children}
-          </SessionProvider>
-        </QueryProvider>
+        <ErrorBoundaryProvider>
+          <QueryProvider>
+            <SessionProvider>
+              {children}
+            </SessionProvider>
+          </QueryProvider>
+        </ErrorBoundaryProvider>
       </body>
     </html>
   )

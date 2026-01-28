@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, memo, useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Image from 'next/image'
@@ -23,26 +23,42 @@ type ThumbsRegister = {
   messageId: string
 }
 
-export function MessageBubble({
+const MARKDOWN_STYLES = cn(
+  'text-sm leading-relaxed',
+  '[&>p]:mb-2 [&>p]:last:mb-0',
+  '[&>h1]:text-lg [&>h1]:font-bold',
+  '[&>h2]:text-base [&>h2]:font-bold',
+  '[&>ul]:list-disc [&>ul]:ml-4',
+  '[&>ol]:list-decimal [&>ol]:ml-4',
+  '[&>code]:px-1.5 [&>code]:py-0.5 [&>code]:bg-white/50 [&>code]:rounded [&>code]:font-mono',
+  '[&>pre]:p-3 [&>pre]:bg-white/50 [&>pre]:rounded-lg [&>pre]:overflow-x-auto'
+)
+
+function normalizeRole(role: string | undefined): 'USER' | 'ASSISTANT' | undefined {
+  if (!role) return undefined
+  const normalized = role.toUpperCase()
+  if (normalized === 'MODEL') return 'ASSISTANT'
+  if (normalized === 'USER' || normalized === 'ASSISTANT') return normalized as 'USER' | 'ASSISTANT'
+  return undefined
+}
+
+function MessageBubbleComponent({
   message,
   allMessages,
   conversationId,
   conversationTitle,
   onOpenReport,
 }: MessageBubbleProps) {
-  // Get role from message.role or fallback to metadata.role
-  // Normalize "model" to "ASSISTANT" (API returns "model" for assistant messages)
-  let messageRole = message.role || message.metadata?.role
-  if (messageRole === 'model' || messageRole === 'MODEL') {
-    messageRole = 'ASSISTANT'
-  }
-  // Normalize case for consistency
-  if (messageRole === 'user') messageRole = 'USER'
-  if (messageRole === 'assistant') messageRole = 'ASSISTANT'
+  const messageRole = useMemo(() => {
+    const role = message.role || message.metadata?.role
+    return normalizeRole(role)
+  }, [message.role, message.metadata?.role])
   
   const isUser = messageRole === 'USER'
   const isAssistant = messageRole === 'ASSISTANT'
-  const isPending = isAssistant && (!message.message || message.message.trim() === '') && message.id.startsWith('temp-pending')
+  const isPending = useMemo(() => {
+    return isAssistant && (!message.message || message.message.trim() === '') && message.id.startsWith('temp-pending')
+  }, [isAssistant, message.message, message.id])
 
   const [thumbMessages, setThumbMessages] = useState<Record<string, ThumbsRegister[]>>({
     thumbsUp: [],
@@ -105,14 +121,7 @@ export function MessageBubble({
 
   return (
     <div className="w-full mb-6 flex flex-row">
- 
-      <div
-        className={cn(
-          'flex flex-col',
-          isUser ? 'ml-auto items-end' : 'mr-auto items-start'
-        )}
-      >
-  
+      <div className={cn('flex flex-col', isUser ? 'ml-auto items-end' : 'mr-auto items-start')}>
         <div
           className={cn(
             'rounded-2xl px-4 py-3',
@@ -121,76 +130,49 @@ export function MessageBubble({
               : 'text-text max-w-[95%] sm:max-w-2xl lg:max-w-4xl'
           )}
         >
-          {/* Message Content */}
           {isAssistant ? (
             isPending ? (
-             
               <div className="flex items-center justify-start py-2">
-                <Image
-                  src={typingGif}
-                  alt="Typing..."
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                  unoptimized
-                />
+                <Image src={typingGif} alt="Typing..." width={48} height={48} className="object-contain" unoptimized />
               </div>
             ) : (
               <>
-            
                 <div className="lg:hidden mb-2">
-                  <Image
-                    src={logoImage}
-                    alt="warpSpeed"
-                    width={18}
-                    height={18}
-                    className="w-[18px] h-[18px] object-contain"
-                  />
+                  <Image src={logoImage} alt="warpSpeed" width={18} height={18} className="w-[18px] h-[18px] object-contain" />
                 </div>
                 <div className="prose prose-sm max-w-none">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    className={cn(
-                      'text-sm leading-relaxed',
-                      '[&>p]:mb-2 [&>p]:last:mb-0',
-                      '[&>h1]:text-lg [&>h1]:font-bold',
-                      '[&>h2]:text-base [&>h2]:font-bold',
-                      '[&>ul]:list-disc [&>ul]:ml-4',
-                      '[&>ol]:list-decimal [&>ol]:ml-4',
-                      '[&>code]:px-1.5 [&>code]:py-0.5 [&>code]:bg-white/50 [&>code]:rounded [&>code]:font-mono',
-                      '[&>pre]:p-3 [&>pre]:bg-white/50 [&>pre]:rounded-lg [&>pre]:overflow-x-auto'
-                    )}
-                  >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className={MARKDOWN_STYLES}>
                     {message.message}
                   </ReactMarkdown>
                 </div>
               </>
             )
           ) : (
-            <p className="text-sm whitespace-pre-wrap leading-relaxed">
-              {message.message}
-            </p>
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.message}</p>
           )}
 
-          {/* Citations */}
-          {message.citations?.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-border">
-              <div className="text-xs font-medium mb-2">Sources:</div>
-              <div className="space-y-1">
-                {message.citations.map((citation, idx) => (
-                  <a
-                    key={idx}
-                    href={citation.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-primary-dark hover:underline block truncate"
-                  >
-                    {citation.title || citation.source || citation.url}
-                  </a>
-                ))}
+          {(() => {
+            const citations = message.citations
+            if (!citations || citations.length === 0) return null
+            return (
+              <div className="mt-3 pt-3 border-t border-border">
+                <div className="text-xs font-medium mb-2">Sources:</div>
+                <div className="space-y-1">
+                  {citations.map((citation, idx) => (
+                    <a
+                      key={idx}
+                      href={citation.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary-dark hover:underline block truncate"
+                    >
+                      {citation.title || citation.source || citation.url}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )
+          })()}
         </div>
 
         {isAssistant && !isPending && conversationId && (
@@ -212,3 +194,11 @@ export function MessageBubble({
     </div>
   )
 }
+
+export const MessageBubble = memo(MessageBubbleComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.message.id === nextProps.message.id &&
+    prevProps.message.message === nextProps.message.message &&
+    prevProps.conversationId === nextProps.conversationId
+  )
+})

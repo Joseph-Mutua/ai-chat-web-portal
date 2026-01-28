@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, memo } from 'react'
 import { MessageBubble } from './message-bubble'
 import type { MessageType } from '@/types'
 
@@ -11,7 +11,7 @@ interface MessageListProps {
   onOpenReport?: (params: { conversationId: string; messageId: string }) => void
 }
 
-export function MessageList({ messages, conversationId, conversationTitle, onOpenReport }: MessageListProps) {
+function MessageListComponent({ messages, conversationId, conversationTitle, onOpenReport }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
@@ -20,15 +20,12 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
 
-
   const isAtBottom = useCallback(() => {
     if (!containerRef.current) return true
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-  
     const threshold = 10
     return scrollHeight - scrollTop - clientHeight < threshold
   }, [])
-
 
   const handleScroll = useCallback(() => {
     if (!containerRef.current || isScrollingRef.current) return
@@ -46,13 +43,11 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     const lastMessageId = lastMessage?.id
     const hasNewMessages = lastMessageId && lastMessageId !== lastMessageIdRef.current
     
-    
     previousMessagesLength.current = messages.length
     if (lastMessageId) {
       lastMessageIdRef.current = lastMessageId
     }
 
- //Autoscroll behaviour
     if (
       hasNewMessages && 
       shouldAutoScroll && 
@@ -66,7 +61,6 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
         setTimeout(() => {
           if (messagesEndRef.current && containerRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-           
             setTimeout(() => {
               isScrollingRef.current = false
             }, 500)
@@ -78,14 +72,14 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
 
   useEffect(() => {
     if (messages.length > 0 && containerRef.current) {
-      const isAtBottom = containerRef.current.scrollHeight === containerRef.current.clientHeight
-      if (isAtBottom) {
+      const atBottom = containerRef.current.scrollHeight === containerRef.current.clientHeight
+      if (atBottom) {
         setTimeout(() => {
           messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
         }, 100)
       }
     }
-  }, []) 
+  }, [])
 
   return (
     <div
@@ -96,9 +90,7 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     >
       <div className="flex flex-col w-full space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-grey py-12">
-            No messages yet. Start the conversation!
-          </div>
+          <div className="text-center text-grey py-12">No messages yet. Start the conversation!</div>
         ) : (
           messages.map((message) => (
             <MessageBubble 
@@ -116,3 +108,5 @@ export function MessageList({ messages, conversationId, conversationTitle, onOpe
     </div>
   )
 }
+
+export const MessageList = memo(MessageListComponent)
