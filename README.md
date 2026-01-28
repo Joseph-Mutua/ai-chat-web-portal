@@ -30,7 +30,7 @@ The warpSpeed AI Chat Web Portal is a Next.js application that extends the mobil
 
 ### Authentication and Security
 - Email/password login
-- User registration with field validation (email format, password strength)
+- User registration with field validation (names, email format, password requirements)
 - OAuth integration (Google, Apple)
 - Password reset flow
 - Secure token storage
@@ -103,6 +103,7 @@ warpspeed-ai-chat-web-portal/
 │   │   │   ├── message-list.tsx
 │   │   │   ├── message-bubble.tsx
 │   │   │   ├── message-bubble-controls.tsx
+│   │   │   ├── chat-input-base.tsx
 │   │   │   ├── chat-input.tsx
 │   │   │   ├── chat-entry.tsx
 │   │   │   ├── profile-modal.tsx
@@ -110,10 +111,21 @@ warpspeed-ai-chat-web-portal/
 │   │   │   └── logout-modal.tsx
 │   │   └── ui/                  # Reusable UI components
 │   │       ├── loading.tsx
-│   │       └── error.tsx
+│   │       ├── modal.tsx
+│   │       ├── error-boundary.tsx
+│   │       └── form/             # Shared form components
+│   │           ├── password-input.tsx
+│   │           ├── password-requirements.tsx
+│   │           ├── social-login-buttons.tsx
+│   │           ├── form-error.tsx
+│   │           └── form-divider.tsx
 │   ├── hooks/                   # Custom React hooks
 │   │   ├── use-session.ts       # Session management
 │   │   ├── use-session-timeout.ts # Inactivity timeout
+│   │   ├── use-modal.ts
+│   │   ├── use-api-error.ts
+│   │   ├── use-chat-input.ts
+│   │   ├── index.ts
 │   │   └── api/                 # API hooks (React Query)
 │   │       ├── use-auth.ts
 │   │       └── use-chat.ts
@@ -122,17 +134,24 @@ warpspeed-ai-chat-web-portal/
 │   │   │   ├── base.ts          # Axios configuration
 │   │   │   ├── auth.ts          # Auth API
 │   │   │   └── chat.ts          # Chat API
+│   │   ├── validation/          # Shared field validation
+│   │   │   ├── email.ts
+│   │   │   ├── name.ts
+│   │   │   └── password.ts
 │   │   └── utils/               # Utility functions
 │   │       ├── storage.ts       # Token and session storage
 │   │       ├── errors.ts        # Error handling
+│   │       ├── accessibility.ts
 │   │       └── cn.ts            # Class name utility
 │   ├── providers/               # React context providers
 │   │   ├── query-provider.tsx   # React Query provider
-│   │   └── session-provider.tsx # Session timeout provider
+│   │   ├── session-provider.tsx # Session timeout provider
+│   │   └── error-boundary-provider.tsx
 │   ├── types/                   # TypeScript type definitions
 │   │   ├── index.ts
 │   │   ├── auth.ts
-│   │   └── chat.ts
+│   │   ├── chat.ts
+│   │   └── errors.ts
 │   ├── constants/               # Constants and configuration
 │   │   └── Colors.ts            # Color system
 │   └── styles/                  # Global styles
@@ -269,6 +288,7 @@ Middleware protects all routes except:
 - **MessageBubbleControls**: Copy, download, text-to-speech, feedback
 - **ChatInput**: Message input field
 - **ChatEntry**: Welcome screen for new conversations
+- **ChatInputBase**: Shared chat input UI used by chat views
 
 ### Authentication Components
 
@@ -282,6 +302,16 @@ Middleware protects all routes except:
 - **ProfileModal**: Desktop profile management
 - **AccountDetailsModal**: Mobile account details
 - **LogoutModal**: Logout confirmation
+
+### Shared UI, Hooks, and Utilities
+
+- **Modal** (`src/components/ui/modal.tsx`): Accessible modal used by logout and timeout flows
+- **ErrorBoundary** (`src/components/ui/error-boundary.tsx`): Client-side error boundary for UI crashes
+- **ErrorBoundaryProvider** (`src/providers/error-boundary-provider.tsx`): Wraps the app shell in an error boundary
+- **useApiError** (`src/hooks/use-api-error.ts`): Consistent general + field error handling for forms
+- **useModal** (`src/hooks/use-modal.ts`): Focus management, escape/backdrop close, scroll lock
+- **useChatInput** (`src/hooks/use-chat-input.ts`): Shared message input logic (submit, enter behavior, resizing)
+- **Validation utilities** (`src/lib/validation/*`): Shared validation for email/name/password
 
 ## Development Guidelines
 
